@@ -7,5 +7,6 @@ public enum TokenType {
     NUMBER,
     IDENTIFIER,
     LiteralType,
-    EQUALS
+    EQUALS,
+    FUNCTION
 }

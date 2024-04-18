@@ -5,12 +5,19 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class Lexer {
-    private HashMap<String, TokenType> reservedKeywords;
+    private final HashMap<String, TokenType> reservedKeywords;
 
     public  Lexer() {
         this.reservedKeywords = new HashMap<>();
 
+        // Variable types
         this.reservedKeywords.put("int", TokenType.LiteralType);
+
+
+        // Misc.
+        this.reservedKeywords.put("fn", TokenType.FUNCTION);
+
+
     }
 
     public LexerQueue tokenize(String code) {
