@@ -25,7 +25,11 @@ public class Lexer {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i<code.length(); i++) {
             char current = code.charAt(i);
-            if (current == '+' || current == '-' || current == '/' || current == '*') {
+            if (current == '-' && code.charAt(i+1) == '>') {
+                tokens.add(new Token("->", TokenType.TYPE_ARROW));
+                i++;
+            }
+            else if (current == '+' || current == '-' || current == '/' || current == '*') {
                 tokens.add(new Token(Character.toString(current), TokenType.BINARY_OPERATOR));
             }
             else if (current == ' ' || current == '\n' || current == '\t' || current == ',') {

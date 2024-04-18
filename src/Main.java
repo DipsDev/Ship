@@ -9,8 +9,9 @@ import java.util.Queue;
 public class Main {
     public static void main(String[] args) {
         String code = """
-                           int a = 5;
-                           a = a;
+                           fn hello_world(int a) -> int {
+                                a + 5;
+                           }
                       """;
         Lexer lexer = new Lexer();
 

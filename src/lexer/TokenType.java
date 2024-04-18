@@ -12,5 +12,6 @@ public enum TokenType {
     OPEN_PARAN,
     CLOSE_PARAN,
     OPEN_BLOCK,
-    CLOSE_BLOCK
+    CLOSE_BLOCK,
+    TYPE_ARROW,
 }

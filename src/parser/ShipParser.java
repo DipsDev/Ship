@@ -62,7 +62,7 @@ public class ShipParser {
         }
     }
 
-    private Node parseIdentifier() {
+    private Node parseIdent() {
         if (tokens.peek().getType() == TokenType.BINARY_OPERATOR) {
             return parseBinaryExpr();
         }
@@ -79,6 +79,47 @@ public class ShipParser {
 
     }
 
+    private Node parseFuncDecl() {
+        // Remove fn keyword
+        this.tokens.advance();
+        String fnName = this.tokens.advance().getValue();
+        FuncDecl funcDecl = new FuncDecl(fnName);
+        if (this.tokens.advance().getType() != TokenType.OPEN_PARAN) {
+            throw new RuntimeException("Unexpected Token, expected (");
+        }
+        while (this.tokens.get().getType() != TokenType.CLOSE_PARAN) {
+            String paramType = this.tokens.advance().getValue();
+            String paramName = this.tokens.advance().getValue();
+            funcDecl.appendParam(new FuncParam(paramType, paramName));
+        }
+        // Remove the last CLOSE_PARAN
+        tokens.advance();
+
+        // Type arrow
+        if (this.tokens.advance().getType() != TokenType.TYPE_ARROW) {
+            throw new RuntimeException("Unexpected Token, expected ->");
+        }
+
+        funcDecl.setType(this.tokens.advance().getValue());
+
+        // Add the function block
+        if (this.tokens.advance().getType() != TokenType.OPEN_BLOCK) {
+            throw new RuntimeException("Unexpected Token, expected {");
+        }
+
+        while (this.tokens.get().getType() != TokenType.CLOSE_BLOCK) {
+            if (tokens.get().getType() == TokenType.EOL) {
+                this.tokens.advance();
+                continue;
+            }
+            funcDecl.appendBody(this.parse());
+        }
+        tokens.advance();
+
+        return funcDecl;
+
+    }
+
 
 
     private Node parse() {
@@ -92,7 +133,10 @@ public class ShipParser {
                 return parseDeclStmt();
             }
             case IDENTIFIER -> {
-                return parseIdentifier();
+                return parseIdent();
+            }
+            case FUNCTION -> {
+                return parseFuncDecl();
             }
         }
         throw new RuntimeException("Unexpected token " + token.getType());
