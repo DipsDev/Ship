@@ -37,6 +37,18 @@ public class Lexer {
             else if (current == ';') {
                 tokens.add(new Token(";", TokenType.EOL));
             }
+            else if (current == '(') {
+                tokens.add(new Token("(", TokenType.OPEN_PARAN));
+            }
+            else if (current == ')') {
+                tokens.add(new Token(")", TokenType.CLOSE_PARAN));
+            }
+            else if (current == '{') {
+                tokens.add(new Token("(", TokenType.OPEN_BLOCK));
+            }
+            else if (current == '}') {
+                tokens.add(new Token("(", TokenType.CLOSE_BLOCK));
+            }
             else if (Character.isDigit(current)) {
                 char pos = current;
                 while (Character.isDigit(pos)) {

@@ -8,5 +8,9 @@ public enum TokenType {
     IDENTIFIER,
     LiteralType,
     EQUALS,
-    FUNCTION
+    FUNCTION,
+    OPEN_PARAN,
+    CLOSE_PARAN,
+    OPEN_BLOCK,
+    CLOSE_BLOCK
 }
