@@ -23,7 +23,7 @@ Available types are below:
 
 ### Functions:
 `
-fn function_name ~ type parameter_name -> int { ... }
+fn function_name(type parameter_name) -> int { ... }
 `
 
 
