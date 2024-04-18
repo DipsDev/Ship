@@ -67,7 +67,7 @@ public class Lexer {
             else if (Character.isAlphabetic(current)) {
 
                 char pos = current;
-                while (Character.isAlphabetic(pos)) {
+                while (Character.isAlphabetic(pos) || pos == '_') {
                     builder.append(pos);
                     i++;
                     if (i < code.length()) {
