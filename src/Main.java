@@ -1,16 +1,24 @@
 import lexer.Lexer;
+import lexer.LexerQueue;
 import lexer.Token;
+import parser.ShipParser;
+import parser.nodes.Program;
 
 import java.util.Queue;
 
 public class Main {
     public static void main(String[] args) {
         String code = """
-                           String
+                           int a = 5;
+                           a = a;
                       """;
         Lexer lexer = new Lexer();
 
-        Queue<Token> queue = lexer.tokenize(code);
-        queue.forEach(System.out::println);
+        LexerQueue queue = lexer.tokenize(code);
+        queue.getTokens().forEach(System.out::println);
+
+        ShipParser parser = new ShipParser(queue);
+        Program program = parser.build();
+        program.getBody().forEach(System.out::println);
     }
 }

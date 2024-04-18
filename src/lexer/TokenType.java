@@ -5,5 +5,7 @@ public enum TokenType {
     EOF,
     BINARY_OPERATOR,
     NUMBER,
-    IDENTIFIER
+    IDENTIFIER,
+    LiteralType,
+    EQUALS
 }

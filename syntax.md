@@ -1,7 +1,7 @@
 # Ship Syntax Document
 
 ### Variables:
-`(var | const) (name): [type] = (value);`
+`type variable_name = value;`
 
 Although variables are strictly typed,\
 the interpreter can infer the type from the value.\
@@ -23,9 +23,8 @@ Available types are below:
 
 ### Functions:
 `
-(return type) (name)([a]: (type), [b]: (type)) { ... }
+fn function_name ~ type parameter_name -> int { ... }
 `
-
 
 
 ### If statements:
