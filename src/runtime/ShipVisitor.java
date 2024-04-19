@@ -73,13 +73,7 @@ public class ShipVisitor extends RuntimeVisitor {
             RuntimeValue value = callExpr.getParams().get(i).accept(this);
             visitor.createVariable(new Variable(name, value, false));
         }
-        for (Node node : function.getBody()) {
-            RuntimeValue val = node.accept(visitor);
-            if (val != NIL) {
-                return val;
-            }
-        }
-        return NIL;
+        return function.run(visitor);
 
 
     }

@@ -15,6 +15,7 @@ public class Main {
                             return a * factorial(a-1);
                         }
                         let a = factorial(10);
+                        puts(a);
                       """;
         Lexer lexer = new Lexer();
 
@@ -29,7 +30,7 @@ public class Main {
         ShipRuntime shipRuntime = new ShipRuntime();
         shipRuntime.execute(program);
 
-        shipRuntime.getVariables().forEach((s, v) -> System.out.println(v));
+        // shipRuntime.getVariables().forEach((s, v) -> System.out.println(v));
 
 
     }
