@@ -1,5 +1,8 @@
 package runtime;
 
+import errors.ShipNameError;
+import errors.ShipSyntaxError;
+import errors.ShipTypeError;
 import parser.Node;
 import parser.nodes.*;
 import runtime.models.Function;
@@ -16,10 +19,10 @@ public class ShipVisitor extends RuntimeVisitor {
     public RuntimeValue visit(AssignStmt stmt) {
         Variable var = this.getVariable(stmt.getLhs());
         if (var == null) {
-            throw new RuntimeException("NameError: name '" + stmt.getLhs() + "' is undefined");
+            throw new ShipNameError("name is not defined", stmt.getLhs());
         }
         if (var.isConstant()) {
-            throw new RuntimeException("AssignmentError: cannot assign a value to const '" + stmt.getLhs() + "'");
+            throw new ShipTypeError("invalid assignment to const", stmt.getLhs());
         }
         var.setValue(stmt.getRhs().accept(this));
         return NIL;
@@ -36,10 +39,10 @@ public class ShipVisitor extends RuntimeVisitor {
         RuntimeValue rightValue = binaryExpr.getRight().accept(this);
 
         if (leftValue.getType() != LiteralKind.INT) {
-            throw new RuntimeException("TypeError: Cannot do binary operations on non numbers. Got " + leftValue.getValue());
+            throw new ShipTypeError("unsupported operand type(s)", leftValue.getValue());
         }
         if (rightValue.getType() != LiteralKind.INT) {
-            throw new RuntimeException("TypeError: Cannot do binary operations on non numbers. Got " + rightValue.getValue());
+            throw new ShipTypeError("unsupported operand type(s)", rightValue.getValue());
         }
 
         Number value;
@@ -64,7 +67,7 @@ public class ShipVisitor extends RuntimeVisitor {
     public RuntimeValue visit(CallExpr callExpr) {
         Function function = getFunction(callExpr.getName());
         if (function == null) {
-            throw new RuntimeException("NameError: name '" + callExpr.getName() + "' is undefined");
+            throw new ShipNameError("name is not defined", callExpr.getName());
         }
         FunctionVisitor visitor = new FunctionVisitor();
         visitor.applyScope(this.variables, this.functions);
@@ -81,7 +84,7 @@ public class ShipVisitor extends RuntimeVisitor {
     @Override
     public RuntimeValue visit(DeclStmt stmt) {
         if (this.getVariable(stmt.getName()) != null) {
-            throw new RuntimeException("TypeError: name '" + stmt.getName() + "' is already defined in the current context");
+            throw new ShipNameError("name is already defined in the current context", stmt.getName());
         }
         createVariable(new Variable(stmt.getName(), stmt.getValue().accept(this), stmt.getTok().equals("const")));
         return NIL;
@@ -97,14 +100,14 @@ public class ShipVisitor extends RuntimeVisitor {
     public RuntimeValue visit(Ident ident) {
         Variable var = getVariable(ident.getName());
         if (var == null) {
-            throw new RuntimeException("TypeError: name '" + ident.getName() + "' is undefined");
+            throw new ShipNameError("name is not defined", ident.getName());
         }
         return var.getValue();
     }
 
     @Override
     public RuntimeValue visit(ReturnStmt returnStmt) {
-        throw new RuntimeException("SyntaxError: 'return' outside function");
+        throw new ShipSyntaxError("SyntaxError: 'return' outside function", returnStmt.getResult().toString());
     }
 
     @Override
@@ -114,7 +117,7 @@ public class ShipVisitor extends RuntimeVisitor {
         }
         RuntimeValue value = unaryExpr.getValue().accept(this);
         if (value.getType() != LiteralKind.INT) {
-            throw new RuntimeException("TypeError: Cannot do binary operations on non numbers. Got " + value.getValue());
+            throw new ShipTypeError("unsupported operand type(s)", value.getValue());
         }
 
         return new RuntimeValue(-1 * Integer.parseInt(value.getValue()) + "", LiteralKind.INT);

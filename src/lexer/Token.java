@@ -4,9 +4,14 @@ public class Token {
     private String value;
     private TokenType type;
 
-    public Token(String value, TokenType type) {
+    private int line;
+    private int col;
+
+    public Token(String value, TokenType type, int line, int col) {
         this.type = type;
         this.value = value;
+        this.line = line;
+        this.col = col;
     }
 
     public TokenType getType() {

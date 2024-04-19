@@ -1,12 +1,14 @@
 package parser;
 
+import errors.ShipSyntaxError;
+import errors.ShipTypeError;
 import lexer.LexerQueue;
 import lexer.Token;
 import lexer.TokenType;
 import parser.nodes.*;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ShipParser {
     private final LexerQueue tokens;
@@ -25,7 +27,7 @@ public class ShipParser {
         Node val = this.parse();
 
         if (val instanceof FuncDecl) {
-            throw new RuntimeException("SyntaxError: Invalid syntax.");
+            throw new ShipSyntaxError("invalid syntax", ((FuncDecl) val).getName());
         }
 
         return new DeclStmt(val, tok.getValue(), name);
@@ -67,12 +69,12 @@ public class ShipParser {
             case BINARY_OPERATOR -> {
                 current = tokens.advance();
                 if (current.getValue().charAt(0) != '-' && current.getValue().charAt(0) != '+') {
-                    throw new RuntimeException("SyntaxError: unknown operator usage");
+                    throw new ShipSyntaxError("unknown operator usage", current.getValue());
                 }
                 return new UnaryExpr(current.getValue().charAt(0), parsePrimaryExpression());
             }
             default -> {
-                throw new RuntimeException("invalid operation: mismatched type " + current.getType());
+                throw new ShipTypeError("can only concatenate number", current.getValue());
             }
 
 
@@ -133,9 +135,11 @@ public class ShipParser {
         this.tokens.advance();
         String fnName = this.tokens.advance().getValue();
         FuncDecl funcDecl = new FuncDecl(fnName);
-        if (this.tokens.advance().getType() != TokenType.OPEN_PARAN) {
-            throw new RuntimeException("Unexpected Token, expected (");
+        if (this.tokens.get().getType() != TokenType.OPEN_PARAN) {
+            throw new ShipSyntaxError("unexpected Token, expected '('", this.tokens.get().getValue());
         }
+        this.tokens.advance();
+
         while (this.tokens.get().getType() != TokenType.CLOSE_PARAN) {
             String paramName = this.tokens.advance().getValue();
             funcDecl.appendParam(paramName);
@@ -144,9 +148,10 @@ public class ShipParser {
         tokens.advance();
 
         // Add the function block
-        if (this.tokens.advance().getType() != TokenType.OPEN_BLOCK) {
-            throw new RuntimeException("Unexpected Token, expected {");
+        if (this.tokens.get().getType() != TokenType.OPEN_BLOCK) {
+            throw new ShipSyntaxError("unexpected Token, expected {", this.tokens.get().getValue());
         }
+        this.tokens.advance();
 
         while (this.tokens.get().getType() != TokenType.CLOSE_BLOCK) {
             if (tokens.get().getType() == TokenType.EOL) {
@@ -164,7 +169,7 @@ public class ShipParser {
     private Node parseUnaryExpr() {
         Token token = tokens.advance(); // +/- sign
         if (token.getValue().charAt(0) != '-' && token.getValue().charAt(0) != '+') {
-            throw new RuntimeException("SyntaxError: Invalid syntax at " + token.getValue());
+            throw new ShipSyntaxError("invalid syntax", token.getValue());
         }
         Node nd = parseBinaryExpr();
         return new UnaryExpr(token.getValue().charAt(0), nd);
@@ -204,7 +209,7 @@ public class ShipParser {
         ArrayList<Node> body = new ArrayList<>();
 
         if (tokens.get().getType() != TokenType.OPEN_BLOCK) {
-            throw new RuntimeException("SyntaxError: Expected {, got " + tokens.get().getType());
+            throw new ShipSyntaxError("Expected {", tokens.get().getType().name().toLowerCase(Locale.ROOT));
         }
         tokens.advance(); // remove the first {
 
@@ -257,7 +262,7 @@ public class ShipParser {
                 return parseIfStmt();
             }
         }
-        throw new RuntimeException("Unexpected token " + token.getType());
+        throw new ShipSyntaxError("Unexpected token ", token.getType().name().toLowerCase(Locale.ROOT));
 
     }
 

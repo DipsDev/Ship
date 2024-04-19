@@ -1,3 +1,4 @@
+import errors.ShipError;
 import lexer.Lexer;
 import lexer.LexerQueue;
 import parser.ShipParser;
@@ -21,20 +22,25 @@ public class Main {
         } catch (IOException e) {
             throw new RuntimeException("Couldn't open file " + args[0]);
         }
-        Lexer lexer = new Lexer();
+        try {
+            Lexer lexer = new Lexer();
 
-        LexerQueue queue = lexer.tokenize(code);
-        // queue.getTokens().forEach(System.out::println);
+            LexerQueue queue = lexer.tokenize(code);
+            // queue.getTokens().forEach(System.out::println);
 
-        ShipParser parser = new ShipParser(queue);
-        Program program = parser.build();
+            ShipParser parser = new ShipParser(queue);
+            Program program = parser.build();
 
-        // program.getBody().forEach(System.out::println);
+            // program.getBody().forEach(System.out::println);
 
-        ShipRuntime shipRuntime = new ShipRuntime();
-        shipRuntime.execute(program);
+            ShipRuntime shipRuntime = new ShipRuntime();
+            shipRuntime.execute(program);
 
-        // shipRuntime.getVariables().forEach((s, v) -> System.out.println(v));
+            // shipRuntime.getVariables().forEach((s, v) -> System.out.println(v));
+        }
+        catch (ShipError error) {
+            error.printStackTrace();
+        }
 
 
     }

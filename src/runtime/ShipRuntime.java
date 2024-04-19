@@ -1,5 +1,6 @@
 package runtime;
 
+import errors.ShipTypeError;
 import parser.Node;
 import parser.nodes.LiteralKind;
 import parser.nodes.Program;
@@ -30,9 +31,13 @@ public class ShipRuntime {
         return new GlobalFunction("concat", new String[] {"object", "object2"}, (visitor -> {
             Variable object = visitor.getVariable("object");
             Variable object2 = visitor.getVariable("object2");
-            if (object2.getValue().getType() != LiteralKind.STRING || object.getValue().getType() != LiteralKind.STRING) {
-                throw new RuntimeException("TypeError: concat receives 'string' types.");
+            if (object2.getValue().getType() != LiteralKind.STRING) {
+                throw new ShipTypeError("concat receives 'string' types.", object2.getName());
             }
+            if (object.getValue().getType() != LiteralKind.STRING) {
+                throw new ShipTypeError("concat receives 'string' types.", object.getName());
+            }
+
             return new RuntimeValue(object.getValue().getValue() + object2.getValue().getValue(), LiteralKind.STRING);
         }));
     }
