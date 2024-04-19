@@ -146,4 +146,17 @@ public class ShipVisitor extends RuntimeVisitor {
         return new RuntimeValue("false", LiteralKind.BOOLEAN);
 
     }
+
+    @Override
+    public RuntimeValue visit(IfStmt ifStmt) {
+        RuntimeValue bool = ifStmt.getExpr().accept(this);
+        if (bool.getValue().equals("false")) {
+            return NIL;
+        }
+        for (Node nd : ifStmt.getBody()) {
+            nd.accept(this);
+        }
+        return NIL;
+
+    }
 }

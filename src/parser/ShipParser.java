@@ -6,6 +6,7 @@ import lexer.TokenType;
 import parser.nodes.*;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 
 public class ShipParser {
     private final LexerQueue tokens;
@@ -52,15 +53,19 @@ public class ShipParser {
     }
 
     private Node parsePrimaryExpression() {
-        Token current = tokens.advance();
+        Token current = tokens.get();
         switch (current.getType()) {
             case NUMBER -> {
-                return new BasicLit(current.getValue(), LiteralKind.INT);
+                return new BasicLit(tokens.advance().getValue(), LiteralKind.INT);
             }
             case IDENTIFIER -> {
-                return new Ident(current.getValue());
+                if (tokens.peek().getType() == TokenType.OPEN_PARAN) {
+                    return parseCallExpr();
+                }
+                return new Ident(tokens.advance().getValue());
             }
             case BINARY_OPERATOR -> {
+                current = tokens.advance();
                 if (current.getValue().charAt(0) != '-' && current.getValue().charAt(0) != '+') {
                     throw new RuntimeException("SyntaxError: unknown operator usage");
                 }
@@ -197,6 +202,28 @@ public class ShipParser {
     }
 
 
+    private Node parseIfStmt() {
+        tokens.advance(); // remove the if keyword
+        Node expr = this.parse();
+        ArrayList<Node> body = new ArrayList<>();
+
+        if (tokens.get().getType() != TokenType.OPEN_BLOCK) {
+            throw new RuntimeException("SyntaxError: Expected {, got " + tokens.get().getType());
+        }
+        tokens.advance(); // remove the first {
+
+        while (tokens.get().getType() != TokenType.CLOSE_BLOCK) {
+            if (tokens.get().getType() == TokenType.EOL) {
+                this.tokens.advance();
+                continue;
+            }
+            body.add(this.parse());
+        }
+        tokens.advance();
+
+        return new IfStmt(expr, body);
+    }
+
 
     private Node parse() {
         Token token = tokens.get();
@@ -229,6 +256,9 @@ public class ShipParser {
             }
             case NULL -> {
                 return new BasicLit(this.tokens.advance().getValue(), LiteralKind.NULL);
+            }
+            case IF -> {
+                return parseIfStmt();
             }
         }
         throw new RuntimeException("Unexpected token " + token.getType());

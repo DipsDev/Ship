@@ -1,5 +1,6 @@
 package runtime;
 
+import parser.Node;
 import parser.nodes.*;
 import runtime.models.Function;
 import runtime.models.RuntimeValue;
@@ -9,12 +10,27 @@ import java.util.HashMap;
 
 public class FunctionVisitor extends RuntimeVisitor {
 
+    @Override
+    public RuntimeValue visit(IfStmt ifStmt) {
+        RuntimeValue bool = ifStmt.getExpr().accept(this);
+        if (bool.getValue().equals("false")) {
+            return NIL;
+        }
+        for (Node nd : ifStmt.getBody()) {
+            RuntimeValue val = nd.accept(this);
+            if (nd instanceof ReturnStmt) {
+                return val;
+            }
+        }
+        return NIL;
+
+    }
+
 
 
     public RuntimeValue visit(BooleanExpr booleanExpr) {
         RuntimeValue leftVal = booleanExpr.getLeft().accept(this);
         RuntimeValue rightVal = booleanExpr.getRight().accept(this);
-
         if (booleanExpr.getOp().equals("==")) {
             if (leftVal.getValue().equals(rightVal.getValue())) {
                 return new RuntimeValue("true", LiteralKind.BOOLEAN);
@@ -98,8 +114,22 @@ public class FunctionVisitor extends RuntimeVisitor {
         if (function == null) {
             throw new RuntimeException("NameError: name '" + callExpr.getName() + "' is undefined");
         }
-
+        FunctionVisitor visitor = new FunctionVisitor();
+        visitor.applyScope(this.variables, this.functions);
+        for (int i = 0; i < function.getArguments().size(); i++) {
+            String name = function.getArguments().get(i);
+            RuntimeValue value = callExpr.getParams().get(i).accept(this);
+            visitor.createVariable(new Variable(name, value, false));
+        }
+        for (Node node : function.getBody()) {
+            RuntimeValue val = node.accept(visitor);
+            if (val != NIL) {
+                return val;
+            }
+        }
         return NIL;
+
+
     }
 
     @Override

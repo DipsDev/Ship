@@ -16,6 +16,13 @@ public class ReturnStmt extends Node {
     }
 
     @Override
+    public String toString() {
+        return "ReturnStmt{" +
+                "result=" + result +
+                '}';
+    }
+
+    @Override
     public RuntimeValue accept(RuntimeVisitor runtime) {
         return runtime.visit(this);
     }

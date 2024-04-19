@@ -22,6 +22,7 @@ public class Lexer {
         this.reservedKeywords.put("false", TokenType.BOOLEAN);
         this.reservedKeywords.put("true", TokenType.BOOLEAN);
         this.reservedKeywords.put("nil", TokenType.NULL);
+        this.reservedKeywords.put("if", TokenType.IF);
 
 
     }
@@ -100,7 +101,7 @@ public class Lexer {
             else if (Character.isAlphabetic(current)) {
 
                 char pos = current;
-                while (Character.isAlphabetic(pos) || pos == '_') {
+                while (Character.isLetterOrDigit(pos) || pos == '_') {
                     builder.append(pos);
                     i++;
                     if (i < code.length()) {
