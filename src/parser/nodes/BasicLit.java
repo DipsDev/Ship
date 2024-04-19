@@ -1,6 +1,9 @@
 package parser.nodes;
 
 import parser.Node;
+import runtime.RuntimeVisitor;
+import runtime.ShipVisitor;
+import runtime.models.RuntimeValue;
 
 public class BasicLit extends Node {
 
@@ -26,5 +29,10 @@ public class BasicLit extends Node {
 
     public LiteralKind getKind() {
         return kind;
+    }
+
+    @Override
+    public RuntimeValue accept(RuntimeVisitor runtime) {
+        return runtime.visit(this);
     }
 }

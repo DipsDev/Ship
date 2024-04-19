@@ -1,8 +1,9 @@
 package parser.nodes;
 
-import lexer.LexerQueue;
-import lexer.Token;
 import parser.Node;
+import runtime.RuntimeVisitor;
+import runtime.ShipVisitor;
+import runtime.models.RuntimeValue;
 
 public class DeclStmt extends Node {
 
@@ -16,17 +17,6 @@ public class DeclStmt extends Node {
         this.name = name;
     }
 
-    public Node getValue() {
-        return value;
-    }
-
-    public String getTok() {
-        return tok;
-    }
-
-    public String getName() {
-        return name;
-    }
 
     @Override
     public String toString() {
@@ -35,5 +25,10 @@ public class DeclStmt extends Node {
                 ", tok='" + tok + '\'' +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public RuntimeValue accept(RuntimeVisitor runtime) {
+        return runtime.visit(this);
     }
 }

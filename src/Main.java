@@ -1,15 +1,14 @@
 import lexer.Lexer;
 import lexer.LexerQueue;
-import lexer.Token;
 import parser.ShipParser;
 import parser.nodes.Program;
-
-import java.util.Queue;
+import runtime.ShipVisitor;
 
 public class Main {
     public static void main(String[] args) {
         String code = """
-                        hello_world(hello(5));
+                        const a = 5 + 5;
+                        let b = 2 * a - 5;
                       """;
         Lexer lexer = new Lexer();
 
@@ -18,6 +17,12 @@ public class Main {
 
         ShipParser parser = new ShipParser(queue);
         Program program = parser.build();
-        program.getBody().forEach(System.out::println);
+
+        ShipVisitor shipRuntime = new ShipVisitor();
+        shipRuntime.execute(program);
+
+        shipRuntime.getVariables().forEach((String, Variable) -> System.out.println(Variable));
+
+
     }
 }

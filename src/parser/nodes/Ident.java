@@ -1,6 +1,9 @@
 package parser.nodes;
 
 import parser.Node;
+import runtime.RuntimeVisitor;
+import runtime.ShipVisitor;
+import runtime.models.RuntimeValue;
 
 public class Ident extends Node {
     String name;
@@ -14,5 +17,10 @@ public class Ident extends Node {
         return "Ident{" +
                 "name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public RuntimeValue accept(RuntimeVisitor runtime) {
+        return runtime.visit(this);
     }
 }

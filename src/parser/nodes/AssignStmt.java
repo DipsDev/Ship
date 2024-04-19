@@ -1,6 +1,9 @@
 package parser.nodes;
 
 import parser.Node;
+import runtime.RuntimeVisitor;
+import runtime.ShipVisitor;
+import runtime.models.RuntimeValue;
 
 public class AssignStmt extends Node {
     String lhs;
@@ -25,5 +28,10 @@ public class AssignStmt extends Node {
                 "lhs='" + lhs + '\'' +
                 ", rhs=" + rhs +
                 '}';
+    }
+
+    @Override
+    public RuntimeValue accept(RuntimeVisitor runtime) {
+        return runtime.visit(this);
     }
 }

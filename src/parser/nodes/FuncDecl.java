@@ -1,6 +1,8 @@
 package parser.nodes;
 
 import parser.Node;
+import runtime.RuntimeVisitor;
+import runtime.models.RuntimeValue;
 
 import java.util.ArrayList;
 
@@ -43,5 +45,10 @@ public class FuncDecl extends Node {
                 ", params=" + params +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public RuntimeValue accept(RuntimeVisitor runtime) {
+        return runtime.visit(this);
     }
 }

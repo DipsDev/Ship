@@ -1,6 +1,8 @@
 package parser.nodes;
 
 import parser.Node;
+import runtime.RuntimeVisitor;
+import runtime.models.RuntimeValue;
 
 public class FuncParam extends Node {
 
@@ -21,5 +23,9 @@ public class FuncParam extends Node {
         return "FuncParam{" +
                 "name='" + name + '\'' +
                 '}';
+    }
+    @Override
+    public RuntimeValue accept(RuntimeVisitor runtime) {
+        return runtime.visit(this);
     }
 }

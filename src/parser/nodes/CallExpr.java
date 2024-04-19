@@ -1,6 +1,8 @@
 package parser.nodes;
 
 import parser.Node;
+import runtime.RuntimeVisitor;
+import runtime.models.RuntimeValue;
 
 import java.util.ArrayList;
 
@@ -23,5 +25,11 @@ public class CallExpr extends Node {
 
     public void addParam(Node nd) {
         this.params.add(nd);
+    }
+
+    @Override
+    public RuntimeValue accept(RuntimeVisitor runtime) {
+
+        return runtime.visit(this);
     }
 }
