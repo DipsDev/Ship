@@ -7,12 +7,12 @@ import parser.Node;
 public class DeclStmt extends Node {
 
     Node value;
-    String type;
+    String tok;
     String name;
 
-    public DeclStmt(Node value, String type, String name) {
+    public DeclStmt(Node value, String tok, String name) {
         this.value = value;
-        this.type = type;
+        this.tok = tok;
         this.name = name;
     }
 
@@ -20,8 +20,8 @@ public class DeclStmt extends Node {
         return value;
     }
 
-    public String getType() {
-        return type;
+    public String getTok() {
+        return tok;
     }
 
     public String getName() {
@@ -32,7 +32,7 @@ public class DeclStmt extends Node {
     public String toString() {
         return "DeclStmt{" +
                 "value=" + value +
-                ", type='" + type + '\'' +
+                ", tok='" + tok + '\'' +
                 ", name='" + name + '\'' +
                 '}';
     }

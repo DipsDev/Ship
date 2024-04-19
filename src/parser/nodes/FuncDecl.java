@@ -10,8 +10,6 @@ public class FuncDecl extends Node {
 
     String name;
 
-    String type;
-
     public FuncDecl(String name) {
         this.body = new ArrayList<>();
         this.params = new ArrayList<>();
@@ -30,14 +28,6 @@ public class FuncDecl extends Node {
         return body;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public ArrayList<FuncParam> getParams() {
         return params;
     }
@@ -52,7 +42,6 @@ public class FuncDecl extends Node {
                 "body=" + body +
                 ", params=" + params +
                 ", name='" + name + '\'' +
-                ", type='" + type + '\'' +
                 '}';
     }
 }

@@ -10,9 +10,9 @@ public class Lexer {
     public  Lexer() {
         this.reservedKeywords = new HashMap<>();
 
-        // Variable types
-        this.reservedKeywords.put("int", TokenType.LiteralType);
 
+        this.reservedKeywords.put("let", TokenType.LET);
+        this.reservedKeywords.put("const", TokenType.CONST);
 
         // Misc.
         this.reservedKeywords.put("fn", TokenType.FUNCTION);
@@ -25,11 +25,7 @@ public class Lexer {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i<code.length(); i++) {
             char current = code.charAt(i);
-            if (current == '-' && code.charAt(i+1) == '>') {
-                tokens.add(new Token("->", TokenType.TYPE_ARROW));
-                i++;
-            }
-            else if (current == '+' || current == '-' || current == '/' || current == '*') {
+            if (current == '+' || current == '-' || current == '/' || current == '*') {
                 tokens.add(new Token(Character.toString(current), TokenType.BINARY_OPERATOR));
             }
             else if (current == ' ' || current == '\n' || current == '\t' || current == ',') {
@@ -52,6 +48,20 @@ public class Lexer {
             }
             else if (current == '}') {
                 tokens.add(new Token("(", TokenType.CLOSE_BLOCK));
+            }
+            else if (current == '"') {
+                i++;
+                char pos = code.charAt(i);
+                while (pos != '"') {
+                    builder.append(pos);
+                    i++;
+                    if (i >= code.length()) {
+                        break;
+                    }
+                    pos = code.charAt(i);
+                }
+                tokens.add(new Token(builder.toString(), TokenType.STRING));
+                builder.setLength(0);
             }
             else if (Character.isDigit(current)) {
                 char pos = current;

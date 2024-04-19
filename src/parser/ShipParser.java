@@ -15,7 +15,7 @@ public class ShipParser {
     }
 
     public DeclStmt parseDeclStmt() {
-        Token type = tokens.advance();
+        Token tok = tokens.advance();
         String name = tokens.advance().getValue();
 
         // remove the equal sign
@@ -23,11 +23,7 @@ public class ShipParser {
 
         Node val = this.parse();
 
-        if (!type.getValue().equals(ShipTC.tc(val).asString())) {
-            throw new RuntimeException(String.format("Type '%s' is not assignable to type '%s'.", ((TypedNode) val).getType().asString(), type.getValue()));
-        }
-
-        return new DeclStmt(val, type.getValue(), name);
+        return new DeclStmt(val, tok.getValue(), name);
     }
 
     public Node parseBinaryExpr() {
@@ -61,7 +57,7 @@ public class ShipParser {
                 return new Ident(current.getValue());
             }
             default -> {
-                throw new RuntimeException("Couldn't parse correctly, got type " + current.getType());
+                throw new RuntimeException("invalid operation: mismatched type " + current.getType());
             }
 
 
@@ -94,19 +90,11 @@ public class ShipParser {
             throw new RuntimeException("Unexpected Token, expected (");
         }
         while (this.tokens.get().getType() != TokenType.CLOSE_PARAN) {
-            String paramType = this.tokens.advance().getValue();
             String paramName = this.tokens.advance().getValue();
-            funcDecl.appendParam(new FuncParam(paramType, paramName));
+            funcDecl.appendParam(new FuncParam(paramName));
         }
         // Remove the last CLOSE_PARAN
         tokens.advance();
-
-        // Type arrow
-        if (this.tokens.advance().getType() != TokenType.TYPE_ARROW) {
-            throw new RuntimeException("Unexpected Token, expected ->");
-        }
-
-        funcDecl.setType(this.tokens.advance().getValue());
 
         // Add the function block
         if (this.tokens.advance().getType() != TokenType.OPEN_BLOCK) {
@@ -135,7 +123,10 @@ public class ShipParser {
             case NUMBER -> {
                 return parseBinaryExpr();
             }
-            case LiteralType -> {
+            case STRING -> {
+                return new BasicLit(tokens.advance().getValue(), LiteralKind.STRING);
+            }
+            case LET, CONST -> {
                 return parseDeclStmt();
             }
             case IDENTIFIER -> {

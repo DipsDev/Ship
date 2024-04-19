@@ -1,11 +1,8 @@
 package parser.nodes;
 
-import lexer.LexerQueue;
-import lexer.Token;
 import parser.Node;
-import parser.TypedNode;
 
-public class BinaryExpr extends Node implements TypedNode {
+public class BinaryExpr extends Node {
     private String op;
 
     private Node left;
@@ -40,8 +37,4 @@ public class BinaryExpr extends Node implements TypedNode {
     }
 
 
-    @Override
-    public LiteralKind getType() {
-        return LiteralKind.INT;
-    }
 }
