@@ -5,6 +5,8 @@ import lexer.Token;
 import lexer.TokenType;
 import parser.nodes.*;
 
+import java.text.MessageFormat;
+
 public class ShipParser {
     private final LexerQueue tokens;
 
@@ -20,6 +22,10 @@ public class ShipParser {
         tokens.advance();
 
         Node val = this.parse();
+
+        if (!type.getValue().equals(ShipTC.tc(val).asString())) {
+            throw new RuntimeException(String.format("Type '%s' is not assignable to type '%s'.", ((TypedNode) val).getType().asString(), type.getValue()));
+        }
 
         return new DeclStmt(val, type.getValue(), name);
     }

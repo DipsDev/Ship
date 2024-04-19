@@ -1,8 +1,9 @@
 package parser.nodes;
 
 import parser.Node;
+import parser.TypedNode;
 
-public class BasicLit extends Node {
+public class BasicLit extends Node implements TypedNode {
 
     String value;
     LiteralKind kind;
@@ -28,4 +29,8 @@ public class BasicLit extends Node {
         return kind;
     }
 
+    @Override
+    public LiteralKind getType() {
+        return kind;
+    }
 }
