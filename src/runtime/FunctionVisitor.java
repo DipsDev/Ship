@@ -64,8 +64,11 @@ public class FunctionVisitor extends RuntimeVisitor {
         }
 
         return NIL;
+    }
 
-
+    @Override
+    public RuntimeValue visit(ReturnStmt returnStmt) {
+        return returnStmt.getResult().accept(this);
     }
 
     @Override

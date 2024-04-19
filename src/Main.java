@@ -8,12 +8,10 @@ import runtime.ShipVisitor;
 public class Main {
     public static void main(String[] args) {
         String code = """
-                        let t = 0;
-                        const four = 4;
-                        fn hello_world(a, b, c) {
-                            t = a + b + c
+                        fn my_four(a) {
+                            return 0 - a;
                         }
-                        hello_world(8 / 2, 4 * 3, four);
+                        const a = my_four(20);
                       """;
         Lexer lexer = new Lexer();
 

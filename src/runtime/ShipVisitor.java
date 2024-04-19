@@ -74,7 +74,10 @@ public class ShipVisitor extends RuntimeVisitor {
             visitor.createVariable(new Variable(name, value, false));
         }
         for (Node node : function.getBody()) {
-            node.accept(visitor);
+            RuntimeValue val = node.accept(visitor);
+            if (val != NIL) {
+                return val;
+            }
         }
         return NIL;
 
@@ -103,5 +106,10 @@ public class ShipVisitor extends RuntimeVisitor {
             throw new RuntimeException("TypeError: name '" + ident.getName() + "' is undefined");
         }
         return var.getValue();
+    }
+
+    @Override
+    public RuntimeValue visit(ReturnStmt returnStmt) {
+        throw new RuntimeException("SyntaxError: 'return' outside function");
     }
 }

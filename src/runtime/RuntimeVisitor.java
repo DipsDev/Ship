@@ -41,6 +41,7 @@ public abstract class RuntimeVisitor {
     public abstract RuntimeValue visit(DeclStmt stmt);
     public abstract RuntimeValue visit(FuncDecl funcDecl);
     public abstract RuntimeValue visit(Ident ident);
+    public abstract RuntimeValue visit(ReturnStmt returnStmt);
 
 
 

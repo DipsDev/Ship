@@ -10,12 +10,13 @@ public class Lexer {
     public  Lexer() {
         this.reservedKeywords = new HashMap<>();
 
-
+        // Variable related
         this.reservedKeywords.put("let", TokenType.LET);
         this.reservedKeywords.put("const", TokenType.CONST);
 
-        // Misc.
+        // Function related
         this.reservedKeywords.put("fn", TokenType.FUNCTION);
+        this.reservedKeywords.put("return", TokenType.RETURN);
 
 
     }

@@ -101,6 +101,12 @@ public class ShipParser {
 
     }
 
+    private Node parseReturnStmt() {
+        this.tokens.advance();
+        Node result = this.parse();
+        return new ReturnStmt(result);
+    }
+
     private Node parseFuncDecl() {
         // Remove fn keyword
         this.tokens.advance();
@@ -154,6 +160,9 @@ public class ShipParser {
             }
             case FUNCTION -> {
                 return parseFuncDecl();
+            }
+            case RETURN -> {
+                return parseReturnStmt();
             }
         }
         throw new RuntimeException("Unexpected token " + token.getType());
