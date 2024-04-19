@@ -35,6 +35,8 @@ public class ShipVisitor extends RuntimeVisitor {
         RuntimeValue leftValue = binaryExpr.getLeft().accept(this);
         RuntimeValue rightValue = binaryExpr.getRight().accept(this);
 
+        System.out.println(leftValue + " " + rightValue);
+
         if (leftValue.getType() != LiteralKind.INT) {
             throw new RuntimeException("TypeError: Cannot do binary operations on non numbers. Got " + leftValue.getValue());
         }
@@ -111,5 +113,18 @@ public class ShipVisitor extends RuntimeVisitor {
     @Override
     public RuntimeValue visit(ReturnStmt returnStmt) {
         throw new RuntimeException("SyntaxError: 'return' outside function");
+    }
+
+    @Override
+    public RuntimeValue visit(UnaryExpr unaryExpr) {
+        if (unaryExpr.getSign() == '+') {
+            return unaryExpr.accept(this);
+        }
+        RuntimeValue value = unaryExpr.getValue().accept(this);
+        if (value.getType() != LiteralKind.INT) {
+            throw new RuntimeException("TypeError: Cannot do binary operations on non numbers. Got " + value.getValue());
+        }
+
+        return new RuntimeValue(-1 * Integer.parseInt(value.getValue()) + "", LiteralKind.INT);
     }
 }

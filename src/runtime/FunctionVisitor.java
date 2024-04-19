@@ -8,6 +8,19 @@ import runtime.models.Variable;
 import java.util.HashMap;
 
 public class FunctionVisitor extends RuntimeVisitor {
+
+    @Override
+    public RuntimeValue visit(UnaryExpr unaryExpr) {
+        if (unaryExpr.getSign() == '+') {
+            return unaryExpr.accept(this);
+        }
+        RuntimeValue value = unaryExpr.getValue().accept(this);
+        if (value.getType() != LiteralKind.INT) {
+            throw new RuntimeException("TypeError: Cannot do binary operations on non numbers. Got " + value.getValue());
+        }
+
+        return new RuntimeValue(-1 * Integer.parseInt(value.getValue()) + "", LiteralKind.INT);
+    }
     @Override
     public RuntimeValue visit(AssignStmt stmt) {
         Variable var = this.getVariable(stmt.getLhs());

@@ -60,6 +60,12 @@ public class ShipParser {
             case IDENTIFIER -> {
                 return new Ident(current.getValue());
             }
+            case BINARY_OPERATOR -> {
+                if (current.getValue().charAt(0) != '-' && current.getValue().charAt(0) != '+') {
+                    throw new RuntimeException("SyntaxError: unknown operator usage");
+                }
+                return new UnaryExpr(current.getValue().charAt(0), parsePrimaryExpression());
+            }
             default -> {
                 throw new RuntimeException("invalid operation: mismatched type " + current.getType());
             }
@@ -140,6 +146,16 @@ public class ShipParser {
 
     }
 
+    private Node parseUnaryExpr() {
+        Token token = tokens.advance(); // +/- sign
+        if (token.getValue().charAt(0) != '-' && token.getValue().charAt(0) != '+') {
+            throw new RuntimeException("SyntaxError: Invalid syntax at " + token.getValue());
+        }
+        Node nd = parseBinaryExpr();
+        return new UnaryExpr(token.getValue().charAt(0), nd);
+
+    }
+
 
 
     private Node parse() {
@@ -148,6 +164,10 @@ public class ShipParser {
         switch(token.getType()) {
             case NUMBER -> {
                 return parseBinaryExpr();
+            }
+            case BINARY_OPERATOR -> {
+                return parseUnaryExpr();
+
             }
             case STRING -> {
                 return new BasicLit(tokens.advance().getValue(), LiteralKind.STRING);
