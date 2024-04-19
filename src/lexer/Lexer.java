@@ -35,7 +35,7 @@ public class Lexer {
             if (current == '+' || current == '-' || current == '/' || current == '*') {
                 tokens.add(new Token(Character.toString(current), TokenType.BINARY_OPERATOR));
             }
-            else if (current == ' ' || current == '\n' || current == '\t' || current == ',') {
+            else if (current == ' ' || current == '\n' || current == '\t' || current == ',' || current == '\r') {
                 continue;
             }
             else if (current == '=') {
@@ -120,7 +120,7 @@ public class Lexer {
                 builder.setLength(0);
             }
             else {
-                throw new Error("Unrecognized token at " + current);
+                System.out.println("Unrecognized token at " + (int) current + ", skipping.");
             }
 
         }

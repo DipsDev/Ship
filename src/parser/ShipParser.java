@@ -185,16 +185,12 @@ public class ShipParser {
     private Node parseString() {
         Token string = tokens.advance();
         switch (tokens.get().getType()) {
-            case EOL -> {
-                this.tokens.advance();
-                return new BasicLit(string.getValue(), LiteralKind.STRING);
-            }
             case BOOLEAN_OPERATOR -> {
                 Token op = tokens.advance();
                 return new BooleanExpr(op.getValue(), new BasicLit(string.getValue(), LiteralKind.STRING), parseString());
             }
             default -> {
-                throw new RuntimeException("Not implemented got" + tokens.get().getType());
+                return new BasicLit(string.getValue(), LiteralKind.STRING);
             }
         }
 
