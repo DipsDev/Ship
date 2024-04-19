@@ -10,7 +10,8 @@ public class BasicLit extends Node {
     String value;
     LiteralKind kind;
 
-    public BasicLit(String value, LiteralKind kind) {
+    public BasicLit(String value, LiteralKind kind, String loc) {
+        super(loc);
         this.value = value;
         this.kind = kind;
     }

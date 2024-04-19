@@ -8,6 +8,7 @@ public class Program extends Node {
     ArrayList<Node> body;
 
     public Program() {
+        super("");
         body = new ArrayList<>();
     }
 

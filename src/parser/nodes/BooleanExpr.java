@@ -10,7 +10,8 @@ public class BooleanExpr extends Node {
     private Node left;
     private Node right;
 
-    public BooleanExpr(String op, Node left, Node right) {
+    public BooleanExpr(String op, Node left, Node right, String loc) {
+        super(loc);
         this.op = op;
         this.left = left;
         this.right = right;

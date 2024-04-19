@@ -19,7 +19,7 @@ public class ShipParser {
 
     public DeclStmt parseDeclStmt() {
         Token tok = tokens.advance();
-        String name = tokens.advance().getValue();
+        Token name = tokens.advance();
 
         // remove the equal sign
         tokens.advance();
@@ -27,10 +27,10 @@ public class ShipParser {
         Node val = this.parse();
 
         if (val instanceof FuncDecl) {
-            throw new ShipSyntaxError("invalid syntax", ((FuncDecl) val).getName());
+            throw new ShipSyntaxError("invalid syntax", ((FuncDecl) val).getName() + val.getLocation());
         }
 
-        return new DeclStmt(val, tok.getValue(), name);
+        return new DeclStmt(val, tok.getValue(), name.getValue(), name.getLocation());
     }
 
     public Node parseBinaryExpr() {
@@ -38,7 +38,7 @@ public class ShipParser {
         while (tokens.get().getValue().equals("+") || tokens.get().getValue().equals("-")) {
             String op = tokens.advance().getValue();
             Node right = parseMultiExpression();
-            left = new BinaryExpr(op, left, right);
+            left = new BinaryExpr(op, left, right, left.getLocation());
         }
         return left;
 
@@ -49,7 +49,7 @@ public class ShipParser {
         while (tokens.get().getValue().equals("*") || tokens.get().getValue().equals("/")) {
             String operator = tokens.advance().getValue();
             Node right = parsePrimaryExpression();
-            left = new BinaryExpr(operator, left, right);
+            left = new BinaryExpr(operator, left, right, left.getLocation());
         }
         return left;
     }
@@ -58,23 +58,23 @@ public class ShipParser {
         Token current = tokens.get();
         switch (current.getType()) {
             case NUMBER -> {
-                return new BasicLit(tokens.advance().getValue(), LiteralKind.INT);
+                return new BasicLit(tokens.advance().getValue(), LiteralKind.INT, current.getLocation());
             }
             case IDENTIFIER -> {
                 if (tokens.peek().getType() == TokenType.OPEN_PARAN) {
                     return parseCallExpr();
                 }
-                return new Ident(tokens.advance().getValue());
+                return new Ident(tokens.advance().getValue(), current.getLocation());
             }
             case BINARY_OPERATOR -> {
                 current = tokens.advance();
                 if (current.getValue().charAt(0) != '-' && current.getValue().charAt(0) != '+') {
-                    throw new ShipSyntaxError("unknown operator usage", current.getValue());
+                    throw new ShipSyntaxError("unknown operator usage", current.getValue() + current.getLocation());
                 }
-                return new UnaryExpr(current.getValue().charAt(0), parsePrimaryExpression());
+                return new UnaryExpr(current.getValue().charAt(0), parsePrimaryExpression(), current.getLocation());
             }
             default -> {
-                throw new ShipTypeError("can only concatenate number", current.getValue());
+                throw new ShipTypeError("can only concatenate number", current.getValue() + current.getLocation());
             }
 
 
@@ -82,9 +82,9 @@ public class ShipParser {
     }
 
     private Node parseCallExpr() {
-        String variableName = tokens.advance().getValue();
+        Token variableName = tokens.advance();
         tokens.advance(); // (
-        CallExpr callExpr = new CallExpr(variableName);
+        CallExpr callExpr = new CallExpr(variableName.getValue(), variableName.getLocation());
         while (!tokens.get().getValue().equals(")")) {
             callExpr.addParam(this.parse());
         }
@@ -94,10 +94,11 @@ public class ShipParser {
     }
 
     private Node parseBooleanExpr() {
-        Node left = new Ident(this.tokens.advance().getValue());
+        Token current = this.tokens.advance();
+        Node left = new Ident(current.getValue(), current.getLocation());
         Token op = this.tokens.advance();
         Node right = this.parse();
-        return new BooleanExpr(op.getValue(), left, right);
+        return new BooleanExpr(op.getValue(), left, right, current.getLocation());
     }
 
     private Node parseIdent() {
@@ -113,13 +114,14 @@ public class ShipParser {
             return parseCallExpr();
         }
         if (tokens.peek().getType() == TokenType.EQUALS) {
-            String variableName = tokens.advance().getValue();
+            Token variable = tokens.advance();
             // remove the equals sign
             tokens.advance();
             Node val = this.parse();
-            return new AssignStmt(variableName, val);
+            return new AssignStmt(variable.getValue(), val, variable.getLocation());
         }
-        return new Ident(tokens.advance().getValue());
+        Token tkn = tokens.advance();
+        return new Ident(tkn.getValue(), tkn.getLocation());
 
 
     }
@@ -127,16 +129,16 @@ public class ShipParser {
     private Node parseReturnStmt() {
         this.tokens.advance();
         Node result = this.parse();
-        return new ReturnStmt(result);
+        return new ReturnStmt(result, result.getLocation());
     }
 
     private Node parseFuncDecl() {
         // Remove fn keyword
         this.tokens.advance();
-        String fnName = this.tokens.advance().getValue();
-        FuncDecl funcDecl = new FuncDecl(fnName);
+        Token fn = this.tokens.advance();
+        FuncDecl funcDecl = new FuncDecl(fn.getValue(), fn.getLocation());
         if (this.tokens.get().getType() != TokenType.OPEN_PARAN) {
-            throw new ShipSyntaxError("unexpected Token, expected '('", this.tokens.get().getValue());
+            throw new ShipSyntaxError("unexpected Token, expected '('", this.tokens.get().getValue() + this.tokens.get().getLocation());
         }
         this.tokens.advance();
 
@@ -149,7 +151,7 @@ public class ShipParser {
 
         // Add the function block
         if (this.tokens.get().getType() != TokenType.OPEN_BLOCK) {
-            throw new ShipSyntaxError("unexpected Token, expected {", this.tokens.get().getValue());
+            throw new ShipSyntaxError("unexpected Token, expected {", this.tokens.get().getValue() + this.tokens.get().getLocation());
         }
         this.tokens.advance();
 
@@ -169,10 +171,10 @@ public class ShipParser {
     private Node parseUnaryExpr() {
         Token token = tokens.advance(); // +/- sign
         if (token.getValue().charAt(0) != '-' && token.getValue().charAt(0) != '+') {
-            throw new ShipSyntaxError("invalid syntax", token.getValue());
+            throw new ShipSyntaxError("invalid syntax", token.getValue() + token.getLocation());
         }
         Node nd = parseBinaryExpr();
-        return new UnaryExpr(token.getValue().charAt(0), nd);
+        return new UnaryExpr(token.getValue().charAt(0), nd, token.getLocation());
 
     }
 
@@ -184,7 +186,7 @@ public class ShipParser {
         }
         String op = tokens.advance().getValue();
         Node right = parseBinaryExpr();
-        return new BooleanExpr(op, left, right);
+        return new BooleanExpr(op, left, right, left.getLocation());
     }
 
     private Node parseString() {
@@ -192,10 +194,10 @@ public class ShipParser {
         switch (tokens.get().getType()) {
             case BOOLEAN_OPERATOR -> {
                 Token op = tokens.advance();
-                return new BooleanExpr(op.getValue(), new BasicLit(string.getValue(), LiteralKind.STRING), parseString());
+                return new BooleanExpr(op.getValue(), new BasicLit(string.getValue(), LiteralKind.STRING, string.getLocation()), parseString(), string.getLocation());
             }
             default -> {
-                return new BasicLit(string.getValue(), LiteralKind.STRING);
+                return new BasicLit(string.getValue(), LiteralKind.STRING, string.getLocation());
             }
         }
 
@@ -204,12 +206,12 @@ public class ShipParser {
 
 
     private Node parseIfStmt() {
-        tokens.advance(); // remove the if keyword
+        Token ifWord = tokens.advance(); // remove the if keyword
         Node expr = this.parse();
         ArrayList<Node> body = new ArrayList<>();
 
         if (tokens.get().getType() != TokenType.OPEN_BLOCK) {
-            throw new ShipSyntaxError("Expected {", tokens.get().getType().name().toLowerCase(Locale.ROOT));
+            throw new ShipSyntaxError("Expected {", tokens.get().getType().name().toLowerCase(Locale.ROOT) + tokens.get().getLocation());
         }
         tokens.advance(); // remove the first {
 
@@ -222,7 +224,7 @@ public class ShipParser {
         }
         tokens.advance();
 
-        return new IfStmt(expr, body);
+        return new IfStmt(expr, body, ifWord.getLocation());
     }
 
 
@@ -253,16 +255,18 @@ public class ShipParser {
                 return parseReturnStmt();
             }
             case BOOLEAN -> {
-                return new BasicLit(this.tokens.advance().getValue(), LiteralKind.BOOLEAN);
+                Token tkn = this.tokens.advance();
+                return new BasicLit(tkn.getValue(), LiteralKind.BOOLEAN, tkn.getLocation());
             }
             case NULL -> {
-                return new BasicLit(this.tokens.advance().getValue(), LiteralKind.NULL);
+                Token tkn = this.tokens.advance();
+                return new BasicLit(tkn.getValue(), LiteralKind.NULL, tkn.getLocation());
             }
             case IF -> {
                 return parseIfStmt();
             }
         }
-        throw new ShipSyntaxError("Unexpected token ", token.getType().name().toLowerCase(Locale.ROOT));
+        throw new ShipSyntaxError("Unexpected token ", token.getType().name().toLowerCase(Locale.ROOT) + token.getLocation());
 
     }
 

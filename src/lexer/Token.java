@@ -14,6 +14,10 @@ public class Token {
         this.col = col;
     }
 
+    public String getLocation() {
+        return line + ":" + col;
+    }
+
     public TokenType getType() {
         return type;
     }

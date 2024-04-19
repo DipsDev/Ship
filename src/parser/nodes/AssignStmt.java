@@ -9,7 +9,8 @@ public class AssignStmt extends Node {
     String lhs;
     Node rhs;
 
-    public AssignStmt(String lhs, Node rhs) {
+    public AssignStmt(String lhs, Node rhs, String loc) {
+        super(loc);
         this.lhs = lhs;
         this.rhs = rhs;
     }

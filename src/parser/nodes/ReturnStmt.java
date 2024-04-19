@@ -7,7 +7,8 @@ import runtime.models.RuntimeValue;
 public class ReturnStmt extends Node {
     Node result;
 
-    public ReturnStmt(Node result) {
+    public ReturnStmt(Node result, String loc) {
+        super(loc);
         this.result = result;
     }
 

@@ -67,7 +67,7 @@ public class ShipVisitor extends RuntimeVisitor {
     public RuntimeValue visit(CallExpr callExpr) {
         Function function = getFunction(callExpr.getName());
         if (function == null) {
-            throw new ShipNameError("name is not defined", callExpr.getName());
+            throw new ShipNameError("name is not defined", callExpr.getName() + callExpr.getLocation());
         }
         FunctionVisitor visitor = new FunctionVisitor();
         visitor.applyScope(this.variables, this.functions);
@@ -84,7 +84,7 @@ public class ShipVisitor extends RuntimeVisitor {
     @Override
     public RuntimeValue visit(DeclStmt stmt) {
         if (this.getVariable(stmt.getName()) != null) {
-            throw new ShipNameError("name is already defined in the current context", stmt.getName());
+            throw new ShipNameError("name is already defined in the current context", stmt.getName() + stmt.getLocation());
         }
         createVariable(new Variable(stmt.getName(), stmt.getValue().accept(this), stmt.getTok().equals("const")));
         return NIL;
@@ -100,14 +100,14 @@ public class ShipVisitor extends RuntimeVisitor {
     public RuntimeValue visit(Ident ident) {
         Variable var = getVariable(ident.getName());
         if (var == null) {
-            throw new ShipNameError("name is not defined", ident.getName());
+            throw new ShipNameError("name is not defined", ident.getName() + ident.getLocation());
         }
         return var.getValue();
     }
 
     @Override
     public RuntimeValue visit(ReturnStmt returnStmt) {
-        throw new ShipSyntaxError("SyntaxError: 'return' outside function", returnStmt.getResult().toString());
+        throw new ShipSyntaxError("SyntaxError: 'return' outside function", returnStmt.getResult().toString() + returnStmt.getLocation());
     }
 
     @Override

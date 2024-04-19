@@ -14,6 +14,6 @@ public class ShipError extends RuntimeException {
     @Override
     public void printStackTrace() {
         System.out.printf("%s: %s%n", errorPrefix, error);
-        System.out.println("\tat " + loc + ";");
+        System.out.println("\tat " + loc);
     }
 }

@@ -10,7 +10,8 @@ public class IfStmt extends Node {
     Node expr;
     ArrayList<Node> body;
 
-    public IfStmt(Node expr, ArrayList<Node> body) {
+    public IfStmt(Node expr, ArrayList<Node> body, String loc) {
+        super(loc);
         this.expr = expr;
         this.body = body;
     }

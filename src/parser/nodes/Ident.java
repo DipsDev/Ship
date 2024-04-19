@@ -8,7 +8,8 @@ import runtime.models.RuntimeValue;
 public class Ident extends Node {
     String name;
 
-    public Ident(String name) {
+    public Ident(String name, String loc) {
+        super(loc);
         this.name = name;
     }
 

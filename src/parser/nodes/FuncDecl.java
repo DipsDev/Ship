@@ -12,7 +12,8 @@ public class FuncDecl extends Node {
 
     String name;
 
-    public FuncDecl(String name) {
+    public FuncDecl(String name, String loc) {
+        super(loc);
         this.body = new ArrayList<>();
         this.params = new ArrayList<>();
         this.name = name;

@@ -32,8 +32,8 @@ public class Lexer {
     public LexerQueue tokenize(String code) {
         LexerQueue tokens = new LexerQueue();
         StringBuilder builder = new StringBuilder();
-        int col = 0;
-        int line = 0;
+        int col = 1;
+        int line = 1;
         for (int i = 0; i<code.length(); i++) {
             char current = code.charAt(i);
             if (current == '+' || current == '-' || current == '/' || current == '*') {
@@ -42,7 +42,7 @@ public class Lexer {
             else if (current == ' ' || current == '\n' || current == '\t' || current == ',' || current == '\r') {
                 if (current == '\n') {
                     line++;
-                    col = 0;
+                    col = 1;
                     continue;
                 }
                 else if (current == '\t') {

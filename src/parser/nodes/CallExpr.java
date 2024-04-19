@@ -10,7 +10,8 @@ public class CallExpr extends Node {
     String name;
     ArrayList<Node> params;
 
-    public CallExpr(String name) {
+    public CallExpr(String name, String loc) {
+        super(loc);
         this.name = name;
         this.params = new ArrayList<>();
     }

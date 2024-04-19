@@ -11,7 +11,8 @@ public class DeclStmt extends Node {
     String tok;
     String name;
 
-    public DeclStmt(Node value, String tok, String name) {
+    public DeclStmt(Node value, String tok, String name, String loc) {
+        super(loc);
         this.value = value;
         this.tok = tok;
         this.name = name;

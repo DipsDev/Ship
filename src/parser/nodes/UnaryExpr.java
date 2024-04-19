@@ -9,7 +9,8 @@ public class UnaryExpr extends Node {
     char sign;
     Node value;
 
-    public UnaryExpr(char sign, Node value) {
+    public UnaryExpr(char sign, Node value, String loc) {
+        super(loc);
         this.sign = sign;
         this.value = value;
     }
