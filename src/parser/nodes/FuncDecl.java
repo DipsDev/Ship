@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class FuncDecl extends Node {
     ArrayList<Node> body;
-    ArrayList<FuncParam> params;
+    ArrayList<String> params;
 
     String name;
 
@@ -22,7 +22,7 @@ public class FuncDecl extends Node {
         this.body.add(nd);
     }
 
-    public void appendParam(FuncParam nd) {
+    public void appendParam(String nd) {
         this.params.add(nd);
     }
 
@@ -30,7 +30,7 @@ public class FuncDecl extends Node {
         return body;
     }
 
-    public ArrayList<FuncParam> getParams() {
+    public ArrayList<String> getParams() {
         return params;
     }
 

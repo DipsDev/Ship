@@ -1,6 +1,7 @@
 package runtime;
 
 import parser.nodes.*;
+import runtime.models.Function;
 import runtime.models.RuntimeValue;
 import runtime.models.Variable;
 
@@ -11,9 +12,19 @@ public abstract class RuntimeVisitor {
     public static final RuntimeValue NIL = new RuntimeValue(null, LiteralKind.NULL);
 
     protected HashMap<String, Variable> variables;
+    protected HashMap<String, Function> functions;
 
     public RuntimeVisitor() {
         this.variables = new HashMap<>();
+        this.functions = new HashMap<>();
+    }
+
+    protected void createFunction(Function function) {
+        functions.put(function.getName(), function);
+    }
+
+    protected Function getFunction(String name) {
+        return  functions.get(name);
     }
 
     protected void createVariable(Variable variable) {
@@ -29,7 +40,6 @@ public abstract class RuntimeVisitor {
     public abstract RuntimeValue visit(CallExpr callExpr);
     public abstract RuntimeValue visit(DeclStmt stmt);
     public abstract RuntimeValue visit(FuncDecl funcDecl);
-    public abstract RuntimeValue visit(FuncParam param);
     public abstract RuntimeValue visit(Ident ident);
 
 

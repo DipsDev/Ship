@@ -15,6 +15,14 @@ public class CallExpr extends Node {
         this.params = new ArrayList<>();
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public ArrayList<Node> getParams() {
+        return params;
+    }
+
     @Override
     public String toString() {
         return "CallExpr{" +

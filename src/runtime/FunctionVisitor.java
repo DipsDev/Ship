@@ -1,6 +1,5 @@
 package runtime;
 
-import parser.Node;
 import parser.nodes.*;
 import runtime.models.Function;
 import runtime.models.RuntimeValue;
@@ -8,10 +7,7 @@ import runtime.models.Variable;
 
 import java.util.HashMap;
 
-public class ShipVisitor extends RuntimeVisitor {
-
-
-
+public class FunctionVisitor extends RuntimeVisitor {
     @Override
     public RuntimeValue visit(AssignStmt stmt) {
         Variable var = this.getVariable(stmt.getLhs());
@@ -66,16 +62,7 @@ public class ShipVisitor extends RuntimeVisitor {
         if (function == null) {
             throw new RuntimeException("NameError: name '" + callExpr.getName() + "' is undefined");
         }
-        FunctionVisitor visitor = new FunctionVisitor();
-        visitor.applyScope(this.variables, this.functions);
-        for (int i = 0; i < function.getArguments().size(); i++) {
-            String name = function.getArguments().get(i);
-            RuntimeValue value = callExpr.getParams().get(i).accept(this);
-            visitor.createVariable(new Variable(name, value, false));
-        }
-        for (Node node : function.getBody()) {
-            node.accept(visitor);
-        }
+
         return NIL;
 
 
@@ -92,8 +79,7 @@ public class ShipVisitor extends RuntimeVisitor {
 
     @Override
     public RuntimeValue visit(FuncDecl funcDecl) {
-        createFunction(new Function(funcDecl.getName(), funcDecl.getBody(), funcDecl.getParams()));
-        return NIL;
+        return null;
     }
 
     @Override
@@ -103,5 +89,10 @@ public class ShipVisitor extends RuntimeVisitor {
             throw new RuntimeException("TypeError: name '" + ident.getName() + "' is undefined");
         }
         return var.getValue();
+    }
+
+    public void applyScope(HashMap<String, Variable> variableHashMap, HashMap<String, Function> functionHashMap) {
+        this.functions.putAll(functionHashMap);
+        this.variables.putAll(variableHashMap);
     }
 }

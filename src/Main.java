@@ -8,9 +8,12 @@ import runtime.ShipVisitor;
 public class Main {
     public static void main(String[] args) {
         String code = """
-                        const a = 5 + 5;
-                        let b = 2 * a - 5;
-                        const c = b - a + 20 / a;
+                        let t = 0;
+                        const four = 4;
+                        fn hello_world(a, b, c) {
+                            t = a + b + c
+                        }
+                        hello_world(8 / 2, 4 * 3, four);
                       """;
         Lexer lexer = new Lexer();
 
@@ -19,6 +22,8 @@ public class Main {
 
         ShipParser parser = new ShipParser(queue);
         Program program = parser.build();
+
+        program.getBody().forEach(System.out::println);
 
         ShipRuntime shipRuntime = new ShipRuntime();
         shipRuntime.execute(program);

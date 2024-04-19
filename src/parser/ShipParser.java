@@ -113,7 +113,7 @@ public class ShipParser {
         }
         while (this.tokens.get().getType() != TokenType.CLOSE_PARAN) {
             String paramName = this.tokens.advance().getValue();
-            funcDecl.appendParam(new FuncParam(paramName));
+            funcDecl.appendParam(paramName);
         }
         // Remove the last CLOSE_PARAN
         tokens.advance();
