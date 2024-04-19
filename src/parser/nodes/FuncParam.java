@@ -19,7 +19,7 @@ public class FuncParam extends Node {
     @Override
     public String toString() {
         return "FuncParam{" +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 '}';
     }
 }

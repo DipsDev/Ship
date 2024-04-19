@@ -9,12 +9,7 @@ import java.util.Queue;
 public class Main {
     public static void main(String[] args) {
         String code = """
-                        let b = 5;
-                        const a = "Hello World!";
-                        
-                        fn read_me(a, b) {
-                            a + 5 * b;
-                        }
+                        hello_world(hello(5));
                       """;
         Lexer lexer = new Lexer();
 

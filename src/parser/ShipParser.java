@@ -23,6 +23,10 @@ public class ShipParser {
 
         Node val = this.parse();
 
+        if (val instanceof FuncDecl) {
+            throw new RuntimeException("SyntaxError: Invalid syntax.");
+        }
+
         return new DeclStmt(val, tok.getValue(), name);
     }
 
@@ -64,12 +68,30 @@ public class ShipParser {
         }
     }
 
+    private Node parseCallExpr() {
+        String variableName = tokens.advance().getValue();
+        tokens.advance(); // (
+        CallExpr callExpr = new CallExpr(variableName);
+        while (!tokens.get().getValue().equals(")")) {
+            callExpr.addParam(this.parse());
+        }
+        tokens.advance();
+        return callExpr;
+
+    }
+
     private Node parseIdent() {
+        // a + 5 * 4;
         if (tokens.peek().getType() == TokenType.BINARY_OPERATOR) {
             return parseBinaryExpr();
         }
+        // let y = a;
         if (tokens.peek().getType() == TokenType.EOL) {
             return new Ident(tokens.advance().getValue());
+        }
+        // a();
+        if (tokens.peek().getType() == TokenType.OPEN_PARAN) {
+            return parseCallExpr();
         }
 
         // Variable assignment
