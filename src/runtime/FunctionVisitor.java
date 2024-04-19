@@ -82,7 +82,7 @@ public class FunctionVisitor extends RuntimeVisitor {
 
     @Override
     public RuntimeValue visit(FuncDecl funcDecl) {
-        return null;
+        throw new RuntimeException("SyntaxError: Inner functions are no supported");
     }
 
     @Override

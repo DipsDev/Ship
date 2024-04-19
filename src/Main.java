@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
         String code = """
                         fn my_four(a) {
-                            return 0 - a;
+                            return 6;
                         }
                         const a = my_four(20);
                       """;
