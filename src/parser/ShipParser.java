@@ -85,21 +85,19 @@ public class ShipParser {
         if (tokens.peek().getType() == TokenType.BINARY_OPERATOR) {
             return parseBinaryExpr();
         }
-        // let y = a;
-        if (tokens.peek().getType() == TokenType.EOL) {
-            return new Ident(tokens.advance().getValue());
-        }
         // a();
         if (tokens.peek().getType() == TokenType.OPEN_PARAN) {
             return parseCallExpr();
         }
+        if (tokens.peek().getType() == TokenType.EQUALS) {
+            String variableName = tokens.advance().getValue();
+            // remove the equals sign
+            tokens.advance();
+            Node val = this.parse();
+            return new AssignStmt(variableName, val);
+        }
+        return new Ident(tokens.advance().getValue());
 
-        // Variable assignment
-        String variableName = tokens.advance().getValue();
-        // remove the equals sign
-        tokens.advance();
-        Node val = this.parse();
-        return new AssignStmt(variableName, val);
 
     }
 

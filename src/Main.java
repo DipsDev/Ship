@@ -23,7 +23,7 @@ public class Main {
         ShipParser parser = new ShipParser(queue);
         Program program = parser.build();
 
-        program.getBody().forEach(System.out::println);
+        // program.getBody().forEach(System.out::println);
 
         ShipRuntime shipRuntime = new ShipRuntime();
         shipRuntime.execute(program);
