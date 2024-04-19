@@ -2,6 +2,7 @@ import lexer.Lexer;
 import lexer.LexerQueue;
 import parser.ShipParser;
 import parser.nodes.Program;
+import runtime.ShipRuntime;
 import runtime.ShipVisitor;
 
 public class Main {
@@ -9,6 +10,7 @@ public class Main {
         String code = """
                         const a = 5 + 5;
                         let b = 2 * a - 5;
+                        const c = b - a + 20 / a;
                       """;
         Lexer lexer = new Lexer();
 
@@ -18,10 +20,10 @@ public class Main {
         ShipParser parser = new ShipParser(queue);
         Program program = parser.build();
 
-        ShipVisitor shipRuntime = new ShipVisitor();
+        ShipRuntime shipRuntime = new ShipRuntime();
         shipRuntime.execute(program);
 
-        shipRuntime.getVariables().forEach((String, Variable) -> System.out.println(Variable));
+        shipRuntime.getVariables().forEach((s, v) -> System.out.println(v));
 
 
     }

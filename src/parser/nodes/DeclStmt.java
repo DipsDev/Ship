@@ -27,6 +27,18 @@ public class DeclStmt extends Node {
                 '}';
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public Node getValue() {
+        return value;
+    }
+
+    public String getTok() {
+        return tok;
+    }
+
     @Override
     public RuntimeValue accept(RuntimeVisitor runtime) {
         return runtime.visit(this);

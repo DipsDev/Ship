@@ -12,6 +12,10 @@ public abstract class RuntimeVisitor {
 
     protected HashMap<String, Variable> variables;
 
+    public RuntimeVisitor() {
+        this.variables = new HashMap<>();
+    }
+
     protected void createVariable(Variable variable) {
         variables.put(variable.getName(), variable);
     }

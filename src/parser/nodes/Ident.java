@@ -19,6 +19,10 @@ public class Ident extends Node {
                 '}';
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public RuntimeValue accept(RuntimeVisitor runtime) {
         return runtime.visit(this);
