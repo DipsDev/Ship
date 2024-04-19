@@ -35,8 +35,6 @@ public class ShipVisitor extends RuntimeVisitor {
         RuntimeValue leftValue = binaryExpr.getLeft().accept(this);
         RuntimeValue rightValue = binaryExpr.getRight().accept(this);
 
-        System.out.println(leftValue + " " + rightValue);
-
         if (leftValue.getType() != LiteralKind.INT) {
             throw new RuntimeException("TypeError: Cannot do binary operations on non numbers. Got " + leftValue.getValue());
         }
@@ -126,5 +124,26 @@ public class ShipVisitor extends RuntimeVisitor {
         }
 
         return new RuntimeValue(-1 * Integer.parseInt(value.getValue()) + "", LiteralKind.INT);
+    }
+
+    @Override
+    public RuntimeValue visit(BooleanExpr booleanExpr) {
+        RuntimeValue leftVal = booleanExpr.getLeft().accept(this);
+        RuntimeValue rightVal = booleanExpr.getRight().accept(this);
+
+        if (booleanExpr.getOp().equals("==")) {
+            if (leftVal.getValue().equals(rightVal.getValue())) {
+                return new RuntimeValue("true", LiteralKind.BOOLEAN);
+            }
+            return new RuntimeValue("false", LiteralKind.BOOLEAN);
+        }
+        if (booleanExpr.getOp().equals("!=")) {
+            if (leftVal.getValue().equals(rightVal.getValue())) {
+                return new RuntimeValue("false", LiteralKind.BOOLEAN);
+            }
+            return new RuntimeValue("true", LiteralKind.BOOLEAN);
+        }
+        return new RuntimeValue("false", LiteralKind.BOOLEAN);
+
     }
 }

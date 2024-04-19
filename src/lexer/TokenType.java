@@ -4,6 +4,7 @@ public enum TokenType {
     EOL,
     EOF,
     BINARY_OPERATOR,
+    BOOLEAN_OPERATOR,
     NUMBER,
     IDENTIFIER,
     EQUALS,
@@ -16,4 +17,7 @@ public enum TokenType {
     LET,
     CONST,
     RETURN,
+    BOOLEAN,
+    NULL,
+    IF,
 }

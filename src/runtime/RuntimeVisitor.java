@@ -43,6 +43,7 @@ public abstract class RuntimeVisitor {
     public abstract RuntimeValue visit(Ident ident);
     public abstract RuntimeValue visit(ReturnStmt returnStmt);
     public abstract RuntimeValue visit(UnaryExpr unaryExpr);
+    public abstract RuntimeValue visit(BooleanExpr booleanExpr);
 
 
 

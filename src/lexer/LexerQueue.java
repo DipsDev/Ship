@@ -20,6 +20,10 @@ public class LexerQueue {
         return tokens.get(1);
     }
 
+    public Token reach() {
+        return tokens.get(2);
+    }
+
     public Token get() {
         return tokens.peek();
     }

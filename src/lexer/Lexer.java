@@ -18,6 +18,11 @@ public class Lexer {
         this.reservedKeywords.put("fn", TokenType.FUNCTION);
         this.reservedKeywords.put("return", TokenType.RETURN);
 
+        // Misc
+        this.reservedKeywords.put("false", TokenType.BOOLEAN);
+        this.reservedKeywords.put("true", TokenType.BOOLEAN);
+        this.reservedKeywords.put("nil", TokenType.NULL);
+
 
     }
 
@@ -33,7 +38,20 @@ public class Lexer {
                 continue;
             }
             else if (current == '=') {
+                if (code.charAt(i+1) == '=') {
+                    tokens.add(new Token("==", TokenType.BOOLEAN_OPERATOR));
+                    i++;
+                    continue;
+                }
                 tokens.add(new Token(Character.toString(current), TokenType.EQUALS));
+            }
+            else if (current == '!') {
+                if (code.charAt(i+1) == '=') {
+                    i++;
+                    tokens.add(new Token("!=", TokenType.BOOLEAN_OPERATOR));
+                    continue;
+                }
+                // When ! (not) implemented it will be put here
             }
             else if (current == ';') {
                 tokens.add(new Token(";", TokenType.EOL));

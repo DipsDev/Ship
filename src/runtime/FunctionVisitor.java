@@ -9,6 +9,29 @@ import java.util.HashMap;
 
 public class FunctionVisitor extends RuntimeVisitor {
 
+
+
+    public RuntimeValue visit(BooleanExpr booleanExpr) {
+        RuntimeValue leftVal = booleanExpr.getLeft().accept(this);
+        RuntimeValue rightVal = booleanExpr.getRight().accept(this);
+
+        if (booleanExpr.getOp().equals("==")) {
+            if (leftVal.getValue().equals(rightVal.getValue())) {
+                return new RuntimeValue("true", LiteralKind.BOOLEAN);
+            }
+            return new RuntimeValue("false", LiteralKind.BOOLEAN);
+        }
+        if (booleanExpr.getOp().equals("!=")) {
+            if (leftVal.getValue().equals(rightVal.getValue())) {
+                return new RuntimeValue("false", LiteralKind.BOOLEAN);
+            }
+            return new RuntimeValue("true", LiteralKind.BOOLEAN);
+        }
+        return new RuntimeValue("false", LiteralKind.BOOLEAN);
+
+    }
+
+
     @Override
     public RuntimeValue visit(UnaryExpr unaryExpr) {
         if (unaryExpr.getSign() == '+') {

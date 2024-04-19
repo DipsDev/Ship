@@ -8,7 +8,8 @@ import runtime.ShipVisitor;
 public class Main {
     public static void main(String[] args) {
         String code = """
-                        let a = 16 / 2 + 3 * -19;
+                        let a = "Hello World!";
+                        const b = nil;
                       """;
         Lexer lexer = new Lexer();
 

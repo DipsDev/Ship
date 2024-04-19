@@ -4,7 +4,8 @@ public enum LiteralKind {
 
     INT("int"),
     STRING("string"),
-    NULL("nil");
+    NULL("nil"),
+    BOOLEAN("boolean");
 
     public final String name;
     LiteralKind(String name) {

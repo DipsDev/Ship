@@ -86,10 +86,20 @@ public class ShipParser {
 
     }
 
+    private Node parseBooleanExpr() {
+        Node left = new Ident(this.tokens.advance().getValue());
+        Token op = this.tokens.advance();
+        Node right = this.parse();
+        return new BooleanExpr(op.getValue(), left, right);
+    }
+
     private Node parseIdent() {
         // a + 5 * 4;
         if (tokens.peek().getType() == TokenType.BINARY_OPERATOR) {
-            return parseBinaryExpr();
+            return parseNumberExpr();
+        }
+        if (tokens.peek().getType() == TokenType.BOOLEAN_OPERATOR) {
+            return parseBooleanExpr();
         }
         // a();
         if (tokens.peek().getType() == TokenType.OPEN_PARAN) {
@@ -157,20 +167,50 @@ public class ShipParser {
     }
 
 
+    private Node parseNumberExpr() {
+        Node left = parseBinaryExpr();
+        if (tokens.get().getType() != TokenType.BOOLEAN_OPERATOR) {
+            return left;
+        }
+        String op = tokens.advance().getValue();
+        Node right = parseBinaryExpr();
+        return new BooleanExpr(op, left, right);
+    }
+
+    private Node parseString() {
+        Token string = tokens.advance();
+        switch (tokens.get().getType()) {
+            case EOL -> {
+                this.tokens.advance();
+                return new BasicLit(string.getValue(), LiteralKind.STRING);
+            }
+            case BOOLEAN_OPERATOR -> {
+                Token op = tokens.advance();
+                return new BooleanExpr(op.getValue(), new BasicLit(string.getValue(), LiteralKind.STRING), parseString());
+            }
+            default -> {
+                throw new RuntimeException("Not implemented got" + tokens.get().getType());
+            }
+        }
+
+
+    }
+
+
 
     private Node parse() {
         Token token = tokens.get();
 
         switch(token.getType()) {
             case NUMBER -> {
-                return parseBinaryExpr();
+                return parseNumberExpr();
             }
             case BINARY_OPERATOR -> {
                 return parseUnaryExpr();
 
             }
             case STRING -> {
-                return new BasicLit(tokens.advance().getValue(), LiteralKind.STRING);
+                return parseString();
             }
             case LET, CONST -> {
                 return parseDeclStmt();
@@ -183,6 +223,12 @@ public class ShipParser {
             }
             case RETURN -> {
                 return parseReturnStmt();
+            }
+            case BOOLEAN -> {
+                return new BasicLit(this.tokens.advance().getValue(), LiteralKind.BOOLEAN);
+            }
+            case NULL -> {
+                return new BasicLit(this.tokens.advance().getValue(), LiteralKind.NULL);
             }
         }
         throw new RuntimeException("Unexpected token " + token.getType());
