@@ -30,7 +30,7 @@ public class Main {
             LexerQueue lexerQueue = lexer.tokenize(code);
             ShipParser parser = new ShipParser(lexerQueue);
             Program pr = parser.build();
-            pr.getBody().forEach(System.out::println);
+            // pr.getBody().forEach(System.out::println);
             new ShipRuntime().execute(pr);
 
 

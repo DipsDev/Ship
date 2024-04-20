@@ -19,6 +19,7 @@ public class ShipRuntime {
         this.main.createFunction(createPrintFunction());
         this.main.createFunction(createConcatFunction());
         this.main.createFunction(createTimeFunction());
+        this.main.createFunction(createSizeFunction());
     }
 
     private GlobalFunction createPrintFunction() {
@@ -31,6 +32,17 @@ public class ShipRuntime {
     private GlobalFunction createTimeFunction() {
         return new GlobalFunction("time", new String[] {}, (visitor -> {
             return new RuntimeValue(((Number) System.nanoTime()).intValue() + "", LiteralKind.INT);
+        }));
+    }
+
+    private GlobalFunction createSizeFunction() {
+        return new GlobalFunction("size", new String[] {"object"}, (visitor -> {
+            Variable var = visitor.getVariable("object");
+            if (var.getValue().getType() != LiteralKind.STRING) {
+                throw new ShipTypeError(String.format("object of type '%s' has no len()", var.getValue().getType()), var.getValue().getValue(), "");
+            }
+
+            return new RuntimeValue(var.getValue().getValue().length() + "", LiteralKind.INT);
         }));
     }
 
