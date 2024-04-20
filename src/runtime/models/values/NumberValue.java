@@ -7,4 +7,9 @@ public class NumberValue extends RuntimeValue<Number> {
     public NumberValue(Number value, LiteralKind type) {
         super(value, type);
     }
+
+    @Override
+    public String getPrintable() {
+        return value.toString();
+    }
 }

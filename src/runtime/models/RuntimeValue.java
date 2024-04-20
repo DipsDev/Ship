@@ -1,10 +1,11 @@
 package runtime.models;
 
+import errors.ShipTypeError;
 import parser.LiteralKind;
 
 public class RuntimeValue<T> {
-    T value;
-    LiteralKind type;
+    protected T value;
+    protected LiteralKind type;
 
     public RuntimeValue(T value, LiteralKind type) {
         this.value = value;
@@ -17,6 +18,10 @@ public class RuntimeValue<T> {
 
     public LiteralKind getType() {
         return type;
+    }
+
+    public String getPrintable() {
+        throw new ShipTypeError("Unable to print type", value.toString(), "");
     }
 
     @Override

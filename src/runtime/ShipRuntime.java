@@ -29,7 +29,7 @@ public class ShipRuntime {
 
     private GlobalFunction createPrintFunction() {
         return new GlobalFunction("puts", new String[] {"object"}, (visitor -> {
-            System.out.println(visitor.getVariable("object").getValue().getValue());
+            System.out.println(visitor.getVariable("object").getValue().getPrintable());
             return RuntimeVisitor.NIL;
         }));
     }

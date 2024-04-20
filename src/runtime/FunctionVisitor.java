@@ -35,11 +35,6 @@ public class FunctionVisitor extends RuntimeVisitor {
     }
 
     @Override
-    public ComplexValue visit(ArrayLit arrayLit) {
-        return null;
-    }
-
-    @Override
     public RuntimeValue<?> visit(ReturnStmt returnStmt) {
         return returnStmt.getResult().accept(this);
     }

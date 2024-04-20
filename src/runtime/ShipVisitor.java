@@ -22,7 +22,7 @@ public class ShipVisitor extends RuntimeVisitor {
 
     @Override
     public RuntimeValue<?> visit(ReturnStmt returnStmt) {
-        throw new ShipSyntaxError("SyntaxError: 'return' outside function", returnStmt.getResult().toString() , returnStmt.getLocation());
+        throw new ShipSyntaxError("'return' outside function", returnStmt.getResult().toString() , returnStmt.getLocation());
     }
 
 
@@ -42,10 +42,5 @@ public class ShipVisitor extends RuntimeVisitor {
         }
         return NIL;
 
-    }
-
-    @Override
-    public ComplexValue visit(ArrayLit arrayLit) {
-        return null;
     }
 }

@@ -4,6 +4,7 @@ import errors.ShipNameError;
 import errors.ShipTypeError;
 import parser.BaseKind;
 import parser.LiteralKind;
+import parser.Node;
 import parser.nodes.*;
 import runtime.models.Function;
 import runtime.models.RuntimeValue;
@@ -11,8 +12,11 @@ import runtime.models.Variable;
 import runtime.models.values.BooleanValue;
 import runtime.models.values.ComplexValue;
 import runtime.models.values.NumberValue;
+import runtime.models.values.StringValue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public abstract class RuntimeVisitor {
 
@@ -53,7 +57,14 @@ public abstract class RuntimeVisitor {
         return NIL;
     }
     public RuntimeValue<?> visit(BasicLit basicLit) {
-        return new RuntimeValue<>(basicLit.getValue(), basicLit.getKind());
+        if (basicLit.getKind().getBase() == BaseKind.NUMBER) {
+            return new NumberValue(Double.parseDouble(basicLit.getValue()),basicLit.getKind());
+        }
+        if (basicLit.getKind() == LiteralKind.STRING) {
+            return new StringValue(basicLit.getValue(), basicLit.getKind());
+        }
+        throw new ShipTypeError("unsupported basic literal", basicLit.getValue(), basicLit.getLocation());
+
     }
 
     public NumberValue visit(BinaryExpr binaryExpr) {
@@ -113,7 +124,8 @@ public abstract class RuntimeVisitor {
         if (this.getVariable(stmt.getName()) != null) {
             throw new ShipNameError("name is already defined in the current context", stmt.getName() ,stmt.getLocation());
         }
-        createVariable(new Variable(stmt.getName(), stmt.getValue().accept(this), stmt.getTok().equals("const")));
+        RuntimeValue<?> val = stmt.getValue().accept(this);
+        createVariable(new Variable(stmt.getName(),val , stmt.getTok().equals("const")));
         return NIL;
     }
     public abstract RuntimeValue<?> visit(FuncDecl funcDecl);
@@ -154,7 +166,7 @@ public abstract class RuntimeVisitor {
             return left.doubleValue() < right.doubleValue();
         }
 
-        return left.doubleValue() >= right.doubleValue();
+        return left.doubleValue() <= right.doubleValue();
 
     }
 
@@ -200,7 +212,13 @@ public abstract class RuntimeVisitor {
     }
     public abstract RuntimeValue<?> visit(IfStmt ifStmt);
 
-    public abstract ComplexValue visit(ArrayLit arrayLit);
+    public ComplexValue visit(ArrayLit arrayLit) {
+        List<RuntimeValue<?>> values = new ArrayList<>();
+        for (Node nd : arrayLit.getElements()) {
+            values.add(nd.accept(this));
+        }
+        return new ComplexValue(values, LiteralKind.ARRAY);
+    }
 
 
 

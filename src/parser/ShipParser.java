@@ -207,6 +207,9 @@ public class ShipParser {
                 Token op = tokens.advance();
                 return new BooleanExpr(op.getValue(), new BasicLit(string.getValue(), LiteralKind.STRING, string.getLocation()), this.parse(), string.getLocation());
             }
+            case BINARY_OPERATOR -> {
+                throw new ShipTypeError("unsupported operand type(s)", tokens.get().getValue(), tokens.get().getLocation());
+            }
             default -> {
                 return new BasicLit(string.getValue(), LiteralKind.STRING, string.getLocation());
             }
