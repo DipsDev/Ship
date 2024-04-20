@@ -72,7 +72,7 @@ paste("My age is ", age) -> "My age is 17"
 ```
 
 ### If Statements
-```
+```javascript
 if a > 3 {
     puts("a is larger than 3");
 }
@@ -83,14 +83,14 @@ if a > 3 {
 Ship supports all kind of expressions
 
 #### Boolean Expressions
-```
+```javascript
 const a = 4 > 3 -> true
 const b = 5 == 5 -> true
 const c = 4 < 1 -> false
 ```
 
 #### Binary Expressions
-```
+```javascript
 const a = 4 * 5 + 3
 const b = 4 - 10 / 2
 const c = 10 % 2
