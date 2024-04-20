@@ -58,7 +58,7 @@ public class FunctionVisitor extends RuntimeVisitor {
         }
         RuntimeValue value = unaryExpr.getValue().accept(this);
         if (value.getType() != LiteralKind.INT) {
-            throw new ShipTypeError("unsupported operand type(s)", value.getValue());
+            throw new ShipTypeError("unsupported operand type(s)", value.getValue(), unaryExpr.getLocation());
         }
 
         return new RuntimeValue(-1 * Integer.parseInt(value.getValue()) + "", LiteralKind.INT);
@@ -67,10 +67,10 @@ public class FunctionVisitor extends RuntimeVisitor {
     public RuntimeValue visit(AssignStmt stmt) {
         Variable var = this.getVariable(stmt.getLhs());
         if (var == null) {
-            throw new ShipNameError("name is not defined", stmt.getLhs());
+            throw new ShipNameError("name is not defined", stmt.getLhs(), stmt.getLocation());
         }
         if (var.isConstant()) {
-            throw new ShipTypeError("invalid assignment to const", stmt.getLhs());
+            throw new ShipTypeError("invalid assignment to const", stmt.getLhs(), stmt.getLocation());
         }
         var.setValue(stmt.getRhs().accept(this));
         return NIL;
@@ -87,10 +87,10 @@ public class FunctionVisitor extends RuntimeVisitor {
         RuntimeValue rightValue = binaryExpr.getRight().accept(this);
 
         if (leftValue.getType() != LiteralKind.INT) {
-            throw new ShipTypeError("unsupported operand type(s)", leftValue.getValue());
+            throw new ShipTypeError("unsupported operand type(s)", leftValue.getValue(), binaryExpr.getLeft().getLocation());
         }
         if (rightValue.getType() != LiteralKind.INT) {
-            throw new ShipTypeError("unsupported operand type(s)", rightValue.getValue());
+            throw new ShipTypeError("unsupported operand type(s)", rightValue.getValue(), binaryExpr.getRight().getLocation());
         }
 
         Number value;
@@ -115,7 +115,7 @@ public class FunctionVisitor extends RuntimeVisitor {
     public RuntimeValue visit(CallExpr callExpr) {
         Function function = getFunction(callExpr.getName());
         if (function == null) {
-            throw new ShipNameError("name is not defined", callExpr.getName());
+            throw new ShipNameError("name is not defined", callExpr.getName(), callExpr.getLocation());
         }
         FunctionVisitor visitor = new FunctionVisitor();
         visitor.applyScope(this.variables, this.functions);
@@ -137,7 +137,7 @@ public class FunctionVisitor extends RuntimeVisitor {
     @Override
     public RuntimeValue visit(DeclStmt stmt) {
         if (this.getVariable(stmt.getName()) != null) {
-            throw new ShipNameError("name is already defined in the current context", stmt.getName());
+            throw new ShipNameError("name is already defined in the current context", stmt.getName(), stmt.getLocation());
         }
         createVariable(new Variable(stmt.getName(), stmt.getValue().accept(this), stmt.getTok().equals("const")));
         return NIL;
@@ -145,14 +145,14 @@ public class FunctionVisitor extends RuntimeVisitor {
 
     @Override
     public RuntimeValue visit(FuncDecl funcDecl) {
-        throw new ShipSyntaxError("inner functions are no supported", funcDecl.getName());
+        throw new ShipSyntaxError("inner functions are no supported", funcDecl.getName(), funcDecl.getLocation());
     }
 
     @Override
     public RuntimeValue visit(Ident ident) {
         Variable var = getVariable(ident.getName());
         if (var == null) {
-            throw new ShipNameError("name is not defined", ident.getName());
+            throw new ShipNameError("name is not defined", ident.getName(), ident.getLocation());
         }
         return var.getValue();
     }

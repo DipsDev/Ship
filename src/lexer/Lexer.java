@@ -53,9 +53,13 @@ public class Lexer {
                     col += 1;
                     continue;
                 }
+                if (current == '\r') {
+                    continue;
+                }
             }
             else if (current == '=') {
                 if (code.charAt(i+1) == '=') {
+                    col += 1;
                     tokens.add(new Token("==", TokenType.BOOLEAN_OPERATOR, line, col ));
                     i++;
                     continue;
@@ -64,6 +68,7 @@ public class Lexer {
             }
             else if (current == '!') {
                 if (code.charAt(i+1) == '=') {
+                    col += 1;
                     i++;
                     tokens.add(new Token("!=", TokenType.BOOLEAN_OPERATOR, line, col));
                     continue;
@@ -80,10 +85,10 @@ public class Lexer {
                 tokens.add(new Token(")", TokenType.CLOSE_PARAN, line, col));
             }
             else if (current == '{') {
-                tokens.add(new Token("(", TokenType.OPEN_BLOCK, line, col));
+                tokens.add(new Token("{", TokenType.OPEN_BLOCK, line, col));
             }
             else if (current == '}') {
-                tokens.add(new Token("(", TokenType.CLOSE_BLOCK, line, col));
+                tokens.add(new Token("}", TokenType.CLOSE_BLOCK, line, col));
             }
             else if (current == '"') {
                 i++;
@@ -97,7 +102,9 @@ public class Lexer {
                     pos = code.charAt(i);
                 }
                 tokens.add(new Token(builder.toString(), TokenType.STRING, line, col));
+                col += builder.length();
                 builder.setLength(0);
+                continue;
             }
             else if (Character.isDigit(current)) {
                 char pos = current;
@@ -112,7 +119,9 @@ public class Lexer {
                 }
                 i--;
                 tokens.add(new Token(builder.toString(), TokenType.NUMBER, line, col));
+                col += builder.length();
                 builder.setLength(0);
+                continue;
             }
             else if (Character.isAlphabetic(current)) {
 
@@ -127,16 +136,20 @@ public class Lexer {
                     }
                 }
                 i--;
+
                 if (reservedKeywords.containsKey(builder.toString())) {
                     tokens.add(new Token(builder.toString(), reservedKeywords.get(builder.toString()), line, col));
+                    col += builder.length();
                     builder.setLength(0);
                     continue;
                 }
                 tokens.add(new Token(builder.toString(), TokenType.IDENTIFIER, line, col));
+                col += builder.length();
                 builder.setLength(0);
+                continue;
             }
             else {
-                throw new ShipSyntaxError("Unrecognized token", current + "");
+                throw new ShipSyntaxError("Unrecognized token", Character.toString(current), col + ":" + line);
             }
             col++;
 

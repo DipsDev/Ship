@@ -27,7 +27,7 @@ public class ShipParser {
         Node val = this.parse();
 
         if (val instanceof FuncDecl) {
-            throw new ShipSyntaxError("invalid syntax", ((FuncDecl) val).getName() + val.getLocation());
+            throw new ShipSyntaxError("invalid syntax", ((FuncDecl) val).getName(), val.getLocation());
         }
 
         return new DeclStmt(val, tok.getValue(), name.getValue(), name.getLocation());
@@ -69,12 +69,12 @@ public class ShipParser {
             case BINARY_OPERATOR -> {
                 current = tokens.advance();
                 if (current.getValue().charAt(0) != '-' && current.getValue().charAt(0) != '+') {
-                    throw new ShipSyntaxError("unknown operator usage", current.getValue() + current.getLocation());
+                    throw new ShipSyntaxError("unknown operator usage", current.getValue(), current.getLocation());
                 }
                 return new UnaryExpr(current.getValue().charAt(0), parsePrimaryExpression(), current.getLocation());
             }
             default -> {
-                throw new ShipTypeError("can only concatenate number", current.getValue() + current.getLocation());
+                throw new ShipTypeError("can only concatenate number", current.getValue(), current.getLocation());
             }
 
 
@@ -138,20 +138,23 @@ public class ShipParser {
         Token fn = this.tokens.advance();
         FuncDecl funcDecl = new FuncDecl(fn.getValue(), fn.getLocation());
         if (this.tokens.get().getType() != TokenType.OPEN_PARAN) {
-            throw new ShipSyntaxError("unexpected Token, expected '('", this.tokens.get().getValue() + this.tokens.get().getLocation());
+            throw new ShipSyntaxError("unexpected Token, expected '('", this.tokens.get().getValue(), this.tokens.get().getLocation());
         }
         this.tokens.advance();
 
         while (this.tokens.get().getType() != TokenType.CLOSE_PARAN) {
-            String paramName = this.tokens.advance().getValue();
-            funcDecl.appendParam(paramName);
+            Token param = this.tokens.advance();
+            if (param.getType() != TokenType.IDENTIFIER) {
+                throw new ShipSyntaxError("invalid syntax", "'" + param.getValue(), param.getLocation());
+            }
+            funcDecl.appendParam(param.getValue());
         }
         // Remove the last CLOSE_PARAN
         tokens.advance();
 
         // Add the function block
         if (this.tokens.get().getType() != TokenType.OPEN_BLOCK) {
-            throw new ShipSyntaxError("unexpected Token, expected {", this.tokens.get().getValue() + this.tokens.get().getLocation());
+            throw new ShipSyntaxError("unexpected Token, expected {", this.tokens.get().getValue(), this.tokens.get().getLocation());
         }
         this.tokens.advance();
 
@@ -171,7 +174,7 @@ public class ShipParser {
     private Node parseUnaryExpr() {
         Token token = tokens.advance(); // +/- sign
         if (token.getValue().charAt(0) != '-' && token.getValue().charAt(0) != '+') {
-            throw new ShipSyntaxError("invalid syntax", token.getValue() + token.getLocation());
+            throw new ShipSyntaxError("invalid syntax", token.getValue() , token.getLocation());
         }
         Node nd = parseBinaryExpr();
         return new UnaryExpr(token.getValue().charAt(0), nd, token.getLocation());
@@ -211,7 +214,7 @@ public class ShipParser {
         ArrayList<Node> body = new ArrayList<>();
 
         if (tokens.get().getType() != TokenType.OPEN_BLOCK) {
-            throw new ShipSyntaxError("Expected {", tokens.get().getType().name().toLowerCase(Locale.ROOT) + tokens.get().getLocation());
+            throw new ShipSyntaxError("Expected {", tokens.get().getValue(), tokens.get().getLocation());
         }
         tokens.advance(); // remove the first {
 
@@ -266,7 +269,7 @@ public class ShipParser {
                 return parseIfStmt();
             }
         }
-        throw new ShipSyntaxError("Unexpected token ", token.getType().name().toLowerCase(Locale.ROOT) + token.getLocation());
+        throw new ShipSyntaxError("Unexpected token ", token.getValue() , token.getLocation());
 
     }
 
