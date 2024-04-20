@@ -7,7 +7,6 @@ import parser.Node;
 import parser.nodes.*;
 import runtime.models.Function;
 import runtime.models.RuntimeValue;
-import runtime.models.values.ComplexValue;
 
 public class ShipVisitor extends RuntimeVisitor {
 
@@ -16,7 +15,7 @@ public class ShipVisitor extends RuntimeVisitor {
     @Override
     public RuntimeValue<?> visit(FuncDecl funcDecl) {
         createFunction(new Function(funcDecl.getName(), funcDecl.getBody(), funcDecl.getParams()));
-        return NIL;
+        return VOID;
     }
 
 
@@ -35,12 +34,12 @@ public class ShipVisitor extends RuntimeVisitor {
         }
         boolean value = (Boolean) bool.getValue();
         if (!value) {
-            return NIL;
+            return VOID;
         }
         for (Node nd : ifStmt.getBody()) {
             nd.accept(this);
         }
-        return NIL;
+        return VOID;
 
     }
 }

@@ -1,6 +1,8 @@
 package runtime.models;
 
+import errors.ShipError;
 import errors.ShipTypeError;
+import parser.BaseKind;
 import parser.LiteralKind;
 
 public class RuntimeValue<T> {
@@ -10,6 +12,18 @@ public class RuntimeValue<T> {
     public RuntimeValue(T value, LiteralKind type) {
         this.value = value;
         this.type = type;
+    }
+
+    public void validate(LiteralKind type, ShipError error) {
+        if (type != this.type) {
+            throw error;
+        }
+    }
+
+    public void validateBase(BaseKind type, ShipError error) {
+        if (type != this.type.getBase()) {
+            throw error;
+        }
     }
 
     public T getValue() {

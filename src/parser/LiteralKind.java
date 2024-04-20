@@ -6,6 +6,7 @@ public enum LiteralKind {
     STRING(BaseKind.ARRAY),
     ARRAY(BaseKind.ARRAY),
     NULL(BaseKind.NONE),
+    VOID(BaseKind.NONE),
     BOOLEAN(BaseKind.NONE),
     FLOAT(BaseKind.NUMBER);
 

@@ -15,7 +15,7 @@ public abstract class Node {
     }
 
     public RuntimeValue<?> accept(RuntimeVisitor runtime) {
-        return RuntimeVisitor.NIL;
+        return RuntimeVisitor.VOID;
     }
 
 }

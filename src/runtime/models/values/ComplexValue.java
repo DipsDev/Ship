@@ -1,11 +1,12 @@
 package runtime.models.values;
 
 import parser.LiteralKind;
+import runtime.models.RandomAccessValue;
 import runtime.models.RuntimeValue;
 
 import java.util.List;
 
-public class ComplexValue extends RuntimeValue<List<RuntimeValue<?>>> {
+public class ComplexValue extends RuntimeValue<List<RuntimeValue<?>>> implements RandomAccessValue {
     public ComplexValue(List<RuntimeValue<?>> value, LiteralKind type) {
         super(value, type);
     }
@@ -24,5 +25,10 @@ public class ComplexValue extends RuntimeValue<List<RuntimeValue<?>>> {
         }
         builder.append("]");
         return builder.toString();
+    }
+
+    @Override
+    public RuntimeValue<?> getAt(int num) {
+        return value.get(num);
     }
 }

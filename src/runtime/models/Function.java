@@ -5,7 +5,7 @@ import runtime.RuntimeVisitor;
 
 import java.util.List;
 
-import static runtime.RuntimeVisitor.NIL;
+import static runtime.RuntimeVisitor.VOID;
 
 public class Function {
     String name;
@@ -25,11 +25,11 @@ public class Function {
     public RuntimeValue<?> run(RuntimeVisitor visitor) {
         for (Node node : this.body) {
             RuntimeValue<?> val = node.accept(visitor);
-            if (val != NIL) {
+            if (val != VOID) {
                 return val;
             }
         }
-        return NIL;
+        return VOID;
     }
 
     public List<String> getArguments() {

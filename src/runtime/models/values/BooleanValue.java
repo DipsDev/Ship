@@ -8,6 +8,10 @@ public class BooleanValue extends RuntimeValue<Boolean> {
         super(value, type);
     }
 
+    public BooleanValue(Boolean value) {
+        super(value, LiteralKind.BOOLEAN);
+    }
+
     @Override
     public String getPrintable() {
         return "" + value;

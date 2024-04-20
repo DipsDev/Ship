@@ -8,7 +8,6 @@ import parser.nodes.*;
 import runtime.models.Function;
 import runtime.models.RuntimeValue;
 import runtime.models.Variable;
-import runtime.models.values.ComplexValue;
 
 import java.util.HashMap;
 
@@ -22,7 +21,7 @@ public class FunctionVisitor extends RuntimeVisitor {
         }
         boolean value = (Boolean) bool.getValue();
         if (!value) {
-            return NIL;
+            return VOID;
         }
         for (Node nd : ifStmt.getBody()) {
             RuntimeValue<?> val = nd.accept(this);
@@ -30,7 +29,7 @@ public class FunctionVisitor extends RuntimeVisitor {
                 return val;
             }
         }
-        return NIL;
+        return VOID;
 
     }
 

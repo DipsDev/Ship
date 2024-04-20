@@ -20,6 +20,7 @@ import java.util.List;
 
 public abstract class RuntimeVisitor {
 
+    public static final RuntimeValue<?> VOID = new RuntimeValue<>(null, LiteralKind.VOID);
     public static final RuntimeValue<?> NIL = new RuntimeValue<>(null, LiteralKind.NULL);
 
     protected HashMap<String, Variable> variables;
@@ -54,14 +55,20 @@ public abstract class RuntimeVisitor {
             throw new ShipTypeError("invalid assignment to const", stmt.getLhs(), stmt.getLocation());
         }
         var.setValue(stmt.getRhs().accept(this));
-        return NIL;
+        return VOID;
     }
     public RuntimeValue<?> visit(BasicLit basicLit) {
-        if (basicLit.getKind().getBase() == BaseKind.NUMBER) {
+        if (basicLit.getKind() == LiteralKind.INT) {
+            return new NumberValue(Integer.parseInt(basicLit.getValue()),basicLit.getKind());
+        }
+        if (basicLit.getKind() == LiteralKind.FLOAT) {
             return new NumberValue(Double.parseDouble(basicLit.getValue()),basicLit.getKind());
         }
         if (basicLit.getKind() == LiteralKind.STRING) {
             return new StringValue(basicLit.getValue(), basicLit.getKind());
+        }
+        if (basicLit.getKind() == LiteralKind.NULL) {
+            return NIL;
         }
         throw new ShipTypeError("unsupported basic literal", basicLit.getValue(), basicLit.getLocation());
 
@@ -126,7 +133,7 @@ public abstract class RuntimeVisitor {
         }
         RuntimeValue<?> val = stmt.getValue().accept(this);
         createVariable(new Variable(stmt.getName(),val , stmt.getTok().equals("const")));
-        return NIL;
+        return VOID;
     }
     public abstract RuntimeValue<?> visit(FuncDecl funcDecl);
     public RuntimeValue<?> visit(Ident ident) {

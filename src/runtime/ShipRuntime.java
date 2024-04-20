@@ -6,6 +6,7 @@ import parser.Node;
 import parser.LiteralKind;
 import parser.nodes.Program;
 import runtime.models.GlobalFunction;
+import runtime.models.RandomAccessValue;
 import runtime.models.RuntimeValue;
 import runtime.models.Variable;
 import runtime.models.values.NumberValue;
@@ -25,12 +26,13 @@ public class ShipRuntime {
         this.main.createFunction(createConcatFunction());
         this.main.createFunction(createTimeFunction());
         this.main.createFunction(createSizeFunction());
+        this.main.createFunction(createGetFunction());
     }
 
     private GlobalFunction createPrintFunction() {
         return new GlobalFunction("puts", new String[] {"object"}, (visitor -> {
             System.out.println(visitor.getVariable("object").getValue().getPrintable());
-            return RuntimeVisitor.NIL;
+            return RuntimeVisitor.VOID;
         }));
     }
 
@@ -44,7 +46,7 @@ public class ShipRuntime {
         return new GlobalFunction("size", new String[] {"object"}, (visitor -> {
             Variable var = visitor.getVariable("object");
             if (var.getValue().getType().getBase() != BaseKind.ARRAY) {
-                throw new ShipTypeError(String.format("object of type '%s' has no size()", var.getValue().getType().name().toLowerCase(Locale.ROOT)), var.getValue().getValue().toString(), "");
+                throw new ShipTypeError(String.format("object of type '%s' has no size()", var.getValue().getType().name().toLowerCase(Locale.ROOT)), var.getValue().getPrintable(), "");
             }
             if (var.getValue().getType() == LiteralKind.STRING) {
                 String value = (String) var.getValue().getValue();
@@ -55,13 +57,27 @@ public class ShipRuntime {
         }));
     }
 
+    private GlobalFunction createGetFunction() {
+        return new GlobalFunction("get", new String[] {"array", "index"}, visitor -> {
+            Variable var = visitor.getVariable("array");
+            Variable index = visitor.getVariable("index");
+
+            var.getValue().validateBase(BaseKind.ARRAY,
+                    new ShipTypeError(String.format("object of type '%s' has no get()", var.getValue().getType().name().toLowerCase(Locale.ROOT)), var.getValue().getPrintable(), ""));
+
+            index.getValue().validate(LiteralKind.INT,
+                    new ShipTypeError("expected int", var.getValue().getPrintable(), ""));
+            return ((RandomAccessValue) var.getValue()).getAt((Integer) index.getValue().getValue());
+        });
+    }
+
     private GlobalFunction createConcatFunction() {
         return new GlobalFunction("paste", new String[] {"object", "object2"}, (visitor -> {
             Variable object = visitor.getVariable("object");
             Variable object2 = visitor.getVariable("object2");
 
             if (object.getValue().getType() == LiteralKind.ARRAY || object2.getValue().getType() == LiteralKind.ARRAY) {
-                throw new ShipTypeError("object of type array cannot be concatenated with other types", object.getValue().getValue().toString(), "");
+                throw new ShipTypeError("object of type array cannot be concatenated with other types", object.getValue().getPrintable(), "");
             }
 
             return new StringValue(object.getValue().getValue().toString() + object2.getValue().getValue().toString(), LiteralKind.STRING);
