@@ -18,23 +18,28 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        executeAtOnce(args[0]);
 
+
+    }
+
+    private static void executeAtOnce(String path) {
         try {
-            String code = Files.readString(Path.of(args[0]));
+            String code = Files.readString(Path.of(path));
             Lexer lexer = new Lexer();
             LexerQueue lexerQueue = lexer.tokenize(code);
             ShipParser parser = new ShipParser(lexerQueue);
-            new ShipRuntime().execute(parser.build());
+            Program pr = parser.build();
+            pr.getBody().forEach(System.out::println);
+            new ShipRuntime().execute(pr);
 
 
         } catch (IOException e) {
-            throw new RuntimeException("Couldn't open file " + args[0]);
+            throw new RuntimeException("Couldn't open file " + path);
 
 
         } catch (ShipError error) {
             error.printStackTrace();
         }
-
-
     }
 }

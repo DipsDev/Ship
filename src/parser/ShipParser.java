@@ -67,11 +67,13 @@ public class ShipParser {
                 return new Ident(tokens.advance().getValue(), current.getLocation());
             }
             case BINARY_OPERATOR -> {
-                current = tokens.advance();
                 if (current.getValue().charAt(0) != '-' && current.getValue().charAt(0) != '+') {
                     throw new ShipSyntaxError("unknown operator usage", current.getValue(), current.getLocation());
                 }
-                return new UnaryExpr(current.getValue().charAt(0), parsePrimaryExpression(), current.getLocation());
+                return this.parseUnaryExpr();
+            }
+            case STRING -> {
+                return new BasicLit(tokens.advance().getValue(), LiteralKind.STRING, current.getLocation());
             }
             default -> {
                 throw new ShipTypeError("can only concatenate number", current.getValue(), current.getLocation());
@@ -82,13 +84,13 @@ public class ShipParser {
     }
 
     private Node parseCallExpr() {
-        Token variableName = tokens.advance();
-        tokens.advance(); // (
+        Token variableName = tokens.advance(); // Get function name
+        tokens.advance(); // Consume '('
         CallExpr callExpr = new CallExpr(variableName.getValue(), variableName.getLocation());
         while (!tokens.get().getValue().equals(")")) {
             callExpr.addParam(this.parse());
         }
-        tokens.advance();
+        tokens.advance(); // consume )
         return callExpr;
 
     }
@@ -106,12 +108,12 @@ public class ShipParser {
         if (tokens.peek().getType() == TokenType.BINARY_OPERATOR) {
             return parseNumberExpr();
         }
+        if (tokens.peek().getType() == TokenType.OPEN_PARAN) {
+            Node nd = parseNumberExpr();
+            return nd;
+        }
         if (tokens.peek().getType() == TokenType.BOOLEAN_OPERATOR) {
             return parseBooleanExpr();
-        }
-        // a();
-        if (tokens.peek().getType() == TokenType.OPEN_PARAN) {
-            return parseCallExpr();
         }
         if (tokens.peek().getType() == TokenType.EQUALS) {
             Token variable = tokens.advance();
@@ -176,7 +178,11 @@ public class ShipParser {
         if (token.getValue().charAt(0) != '-' && token.getValue().charAt(0) != '+') {
             throw new ShipSyntaxError("invalid syntax", token.getValue() , token.getLocation());
         }
-        Node nd = parseBinaryExpr();
+        Token tkn = tokens.get();
+        if (tkn.getType() == TokenType.STRING) {
+            throw new ShipTypeError("cannot use boolean operators on string type", tkn.getValue(), tkn.getLocation());
+        }
+        Node nd = this.parsePrimaryExpression();
         return new UnaryExpr(token.getValue().charAt(0), nd, token.getLocation());
 
     }
@@ -197,7 +203,7 @@ public class ShipParser {
         switch (tokens.get().getType()) {
             case BOOLEAN_OPERATOR -> {
                 Token op = tokens.advance();
-                return new BooleanExpr(op.getValue(), new BasicLit(string.getValue(), LiteralKind.STRING, string.getLocation()), parseString(), string.getLocation());
+                return new BooleanExpr(op.getValue(), new BasicLit(string.getValue(), LiteralKind.STRING, string.getLocation()), this.parse(), string.getLocation());
             }
             default -> {
                 return new BasicLit(string.getValue(), LiteralKind.STRING, string.getLocation());
@@ -233,14 +239,9 @@ public class ShipParser {
 
     private Node parse() {
         Token token = tokens.get();
-
         switch(token.getType()) {
-            case NUMBER -> {
+            case NUMBER, BINARY_OPERATOR -> {
                 return parseNumberExpr();
-            }
-            case BINARY_OPERATOR -> {
-                return parseUnaryExpr();
-
             }
             case STRING -> {
                 return parseString();

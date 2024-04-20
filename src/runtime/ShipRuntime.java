@@ -35,7 +35,7 @@ public class ShipRuntime {
     }
 
     private GlobalFunction createConcatFunction() {
-        return new GlobalFunction("paste", new String[] {"object", "object2", "object3"}, (visitor -> {
+        return new GlobalFunction("paste", new String[] {"object", "object2"}, (visitor -> {
             Variable object = visitor.getVariable("object");
             Variable object2 = visitor.getVariable("object2");
 
