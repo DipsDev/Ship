@@ -104,6 +104,9 @@ public class FunctionVisitor extends RuntimeVisitor {
             case '*' -> {
                 value = Integer.parseInt(leftValue.getValue()) * Integer.parseInt(rightValue.getValue());
             }
+            case '%' -> {
+                value = Integer.parseInt(leftValue.getValue()) % Integer.parseInt(rightValue.getValue());
+            }
             default -> {
                 value = Integer.parseInt(leftValue.getValue()) / Integer.parseInt(rightValue.getValue());
             }

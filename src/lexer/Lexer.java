@@ -36,7 +36,7 @@ public class Lexer {
         int line = 1;
         for (int i = 0; i<code.length(); i++) {
             char current = code.charAt(i);
-            if (current == '+' || current == '-' || current == '/' || current == '*') {
+            if (current == '+' || current == '-' || current == '/' || current == '*' || current == '%') {
                 tokens.add(new Token(Character.toString(current), TokenType.BINARY_OPERATOR, line, col));
             }
             else if (current == ' ' || current == '\n' || current == '\t' || current == ',' || current == '\r') {

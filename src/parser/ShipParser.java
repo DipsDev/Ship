@@ -46,7 +46,7 @@ public class ShipParser {
     private Node parseMultiExpression() {
         Node left = parsePrimaryExpression();
 
-        while (tokens.get().getValue().equals("*") || tokens.get().getValue().equals("/")) {
+        while (tokens.get().getValue().equals("*") || tokens.get().getValue().equals("/") || tokens.get().getValue().equals("%")) {
             String operator = tokens.advance().getValue();
             Node right = parsePrimaryExpression();
             left = new BinaryExpr(operator, left, right, left.getLocation());
