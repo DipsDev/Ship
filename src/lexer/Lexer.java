@@ -108,9 +108,17 @@ public class Lexer {
             }
             else if (Character.isDigit(current)) {
                 char pos = current;
-                while (Character.isDigit(pos)) {
+                boolean isFloat = false;
+                while (Character.isDigit(pos) || pos == '.') {
                     builder.append(pos);
                     i++;
+                    if (pos == '.') {
+                        if (isFloat) {
+                            throw new ShipSyntaxError("invalid syntax", ".", col + ":" + line);
+                        }
+                        isFloat = true;
+                    }
+
                     if (i < code.length()) {
                         pos = code.charAt(i);
                     } else {
@@ -118,7 +126,11 @@ public class Lexer {
                     }
                 }
                 i--;
-                tokens.add(new Token(builder.toString(), TokenType.NUMBER, line, col));
+                if (isFloat) {
+                    tokens.add(new Token(builder.toString(), TokenType.FLOAT, line, col));
+                } else {
+                    tokens.add(new Token(builder.toString(), TokenType.INTEGER, line, col));
+                }
                 col += builder.length();
                 builder.setLength(0);
                 continue;

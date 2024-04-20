@@ -34,39 +34,6 @@ public class ShipVisitor extends RuntimeVisitor {
     }
 
     @Override
-    public RuntimeValue visit(BinaryExpr binaryExpr) {
-        RuntimeValue leftValue = binaryExpr.getLeft().accept(this);
-        RuntimeValue rightValue = binaryExpr.getRight().accept(this);
-
-        if (leftValue.getType() != LiteralKind.INT) {
-            throw new ShipTypeError("unsupported operand type(s)", leftValue.getValue(), binaryExpr.getLeft().getLocation());
-        }
-        if (rightValue.getType() != LiteralKind.INT) {
-            throw new ShipTypeError("unsupported operand type(s)", rightValue.getValue(), binaryExpr.getRight().getLocation());
-        }
-
-        Number value;
-        switch (binaryExpr.getOp().charAt(0)) {
-            case '+' -> {
-                value = Integer.parseInt(leftValue.getValue()) + Integer.parseInt(rightValue.getValue());
-            }
-            case '-' -> {
-                value = Integer.parseInt(leftValue.getValue()) - Integer.parseInt(rightValue.getValue());
-            }
-            case '*' -> {
-                value = Integer.parseInt(leftValue.getValue()) * Integer.parseInt(rightValue.getValue());
-            }
-            case '%' -> {
-                value = Integer.parseInt(leftValue.getValue()) % Integer.parseInt(rightValue.getValue());
-            }
-            default -> {
-                value = Integer.parseInt(leftValue.getValue()) / Integer.parseInt(rightValue.getValue());
-            }
-        }
-        return new RuntimeValue(value.toString(), LiteralKind.INT);
-    }
-
-    @Override
     public RuntimeValue visit(CallExpr callExpr) {
         Function function = getFunction(callExpr.getName());
         if (function == null) {

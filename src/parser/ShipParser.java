@@ -57,8 +57,11 @@ public class ShipParser {
     private Node parsePrimaryExpression() {
         Token current = tokens.get();
         switch (current.getType()) {
-            case NUMBER -> {
+            case INTEGER -> {
                 return new BasicLit(tokens.advance().getValue(), LiteralKind.INT, current.getLocation());
+            }
+            case FLOAT -> {
+                return new BasicLit(tokens.advance().getValue(), LiteralKind.FLOAT, current.getLocation());
             }
             case IDENTIFIER -> {
                 if (tokens.peek().getType() == TokenType.OPEN_PARAN) {
@@ -240,7 +243,7 @@ public class ShipParser {
     private Node parse() {
         Token token = tokens.get();
         switch(token.getType()) {
-            case NUMBER, BINARY_OPERATOR -> {
+            case INTEGER, FLOAT, BINARY_OPERATOR -> {
                 return parseNumberExpr();
             }
             case STRING -> {

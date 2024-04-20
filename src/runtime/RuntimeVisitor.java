@@ -1,5 +1,6 @@
 package runtime;
 
+import errors.ShipTypeError;
 import parser.nodes.*;
 import runtime.models.Function;
 import runtime.models.RuntimeValue;
@@ -36,7 +37,40 @@ public abstract class RuntimeVisitor {
 
     public abstract RuntimeValue visit(AssignStmt stmt);
     public abstract RuntimeValue visit(BasicLit basicLit);
-    public abstract RuntimeValue visit(BinaryExpr binaryExpr);
+    public RuntimeValue visit(BinaryExpr binaryExpr) {
+        RuntimeValue leftValue = binaryExpr.getLeft().accept(this);
+        RuntimeValue rightValue = binaryExpr.getRight().accept(this);
+
+        if (leftValue.getType() != LiteralKind.INT && leftValue.getType() != LiteralKind.FLOAT) {
+            throw new ShipTypeError("unsupported operand type(s)", leftValue.getValue(), binaryExpr.getLeft().getLocation());
+        }
+        if (rightValue.getType() != LiteralKind.INT && rightValue.getType() != LiteralKind.FLOAT) {
+            throw new ShipTypeError("unsupported operand type(s)", rightValue.getValue(), binaryExpr.getRight().getLocation());
+        }
+
+        Number value;
+        switch (binaryExpr.getOp().charAt(0)) {
+            case '+' -> {
+                value = Double.parseDouble(leftValue.getValue()) + Double.parseDouble(rightValue.getValue());
+            }
+            case '-' -> {
+                value = Double.parseDouble(leftValue.getValue()) - Double.parseDouble(rightValue.getValue());
+            }
+            case '*' -> {
+                value = Double.parseDouble(leftValue.getValue()) * Double.parseDouble(rightValue.getValue());
+            }
+            case '%' -> {
+                value = Double.parseDouble(leftValue.getValue()) % Double.parseDouble(rightValue.getValue());
+            }
+            default -> {
+                value = Double.parseDouble(leftValue.getValue()) / Double.parseDouble(rightValue.getValue());
+            }
+        }
+        if (leftValue.getType() != LiteralKind.FLOAT && rightValue.getType() != LiteralKind.FLOAT) {
+            return new RuntimeValue(value.intValue() + "", LiteralKind.INT);
+        }
+        return new RuntimeValue(value.doubleValue() + "", LiteralKind.FLOAT);
+    }
     public abstract RuntimeValue visit(CallExpr callExpr);
     public abstract RuntimeValue visit(DeclStmt stmt);
     public abstract RuntimeValue visit(FuncDecl funcDecl);
