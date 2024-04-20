@@ -3,6 +3,7 @@ package runtime;
 import errors.ShipNameError;
 import errors.ShipSyntaxError;
 import errors.ShipTypeError;
+import parser.BaseKind;
 import parser.LiteralKind;
 import parser.Node;
 import parser.nodes.*;
@@ -92,26 +93,6 @@ public class ShipVisitor extends RuntimeVisitor {
         return new RuntimeValue(-1 * Integer.parseInt(value.getValue()) + "", LiteralKind.INT);
     }
 
-    @Override
-    public RuntimeValue visit(BooleanExpr booleanExpr) {
-        RuntimeValue leftVal = booleanExpr.getLeft().accept(this);
-        RuntimeValue rightVal = booleanExpr.getRight().accept(this);
-
-        if (booleanExpr.getOp().equals("==")) {
-            if (leftVal.getValue().equals(rightVal.getValue())) {
-                return new RuntimeValue("true", LiteralKind.BOOLEAN);
-            }
-            return new RuntimeValue("false", LiteralKind.BOOLEAN);
-        }
-        if (booleanExpr.getOp().equals("!=")) {
-            if (leftVal.getValue().equals(rightVal.getValue())) {
-                return new RuntimeValue("false", LiteralKind.BOOLEAN);
-            }
-            return new RuntimeValue("true", LiteralKind.BOOLEAN);
-        }
-        return new RuntimeValue("false", LiteralKind.BOOLEAN);
-
-    }
 
     @Override
     public RuntimeValue visit(IfStmt ifStmt) {

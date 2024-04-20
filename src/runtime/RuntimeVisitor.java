@@ -79,7 +79,51 @@ public abstract class RuntimeVisitor {
     public abstract RuntimeValue visit(Ident ident);
     public abstract RuntimeValue visit(ReturnStmt returnStmt);
     public abstract RuntimeValue visit(UnaryExpr unaryExpr);
-    public abstract RuntimeValue visit(BooleanExpr booleanExpr);
+    public boolean calculateGL(Number left, Number right, String op) {
+        if (op.equals(">=")) {
+            return left.doubleValue() >= right.doubleValue();
+        }
+        if (op.equals(">")) {
+            return left.doubleValue() > right.doubleValue();
+        }
+        if (op.equals("<")) {
+            return left.doubleValue() < right.doubleValue();
+        }
+
+        return left.doubleValue() >= right.doubleValue();
+
+    }
+
+    public RuntimeValue visit(BooleanExpr booleanExpr) {
+        RuntimeValue leftVal = booleanExpr.getLeft().accept(this);
+        RuntimeValue rightVal = booleanExpr.getRight().accept(this);
+
+        if (booleanExpr.getOp().equals("==")) {
+            if (leftVal.getValue().equals(rightVal.getValue())) {
+                return new RuntimeValue("true", LiteralKind.BOOLEAN);
+            }
+            return new RuntimeValue("false", LiteralKind.BOOLEAN);
+        }
+        if (booleanExpr.getOp().equals("!=")) {
+            if (leftVal.getValue().equals(rightVal.getValue())) {
+                return new RuntimeValue("false", LiteralKind.BOOLEAN);
+            }
+            return new RuntimeValue("true", LiteralKind.BOOLEAN);
+        }
+        if (leftVal.getType().getBase() != rightVal.getType().getBase()) {
+            throw new ShipTypeError(String.format("'%s' not supported between instances of '%s' and '%s'",
+                    booleanExpr.getOp(), leftVal.getType().name().toLowerCase(), rightVal.getType().name().toLowerCase()),
+                    "", booleanExpr.getLocation());
+        }
+
+        if (leftVal.getType().getBase() == BaseKind.NUMBER) {
+            boolean value = calculateGL(Double.parseDouble(leftVal.getValue()), Double.parseDouble(rightVal.getValue()), booleanExpr.getOp());
+            return new RuntimeValue(value + "", LiteralKind.BOOLEAN);
+        }
+        boolean value = calculateGL((int) leftVal.getValue().charAt(0), (int) rightVal.getValue().charAt(0), booleanExpr.getOp());
+        return new RuntimeValue(value + "", LiteralKind.BOOLEAN);
+
+    }
     public abstract RuntimeValue visit(IfStmt ifStmt);
 
 

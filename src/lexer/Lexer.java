@@ -57,6 +57,15 @@ public class Lexer {
                     continue;
                 }
             }
+            else if (current == '<' || current == '>') {
+                if (code.charAt(i + 1) == '=') {
+                    tokens.add(new Token(current + "=", TokenType.BOOLEAN_OPERATOR, line, col));
+                    col += 1;
+                    i++;
+                    continue;
+                }
+                tokens.add(new Token(current + "", TokenType.BOOLEAN_OPERATOR, line, col));
+            }
             else if (current == '=') {
                 if (code.charAt(i+1) == '=') {
                     col += 1;
