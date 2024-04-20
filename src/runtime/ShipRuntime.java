@@ -18,6 +18,7 @@ public class ShipRuntime {
 
         this.main.createFunction(createPrintFunction());
         this.main.createFunction(createConcatFunction());
+        this.main.createFunction(createTimeFunction());
     }
 
     private GlobalFunction createPrintFunction() {
@@ -27,16 +28,16 @@ public class ShipRuntime {
         }));
     }
 
+    private GlobalFunction createTimeFunction() {
+        return new GlobalFunction("time", new String[] {}, (visitor -> {
+            return new RuntimeValue(((Number) System.nanoTime()).intValue() + "", LiteralKind.INT);
+        }));
+    }
+
     private GlobalFunction createConcatFunction() {
-        return new GlobalFunction("concat", new String[] {"object", "object2"}, (visitor -> {
+        return new GlobalFunction("paste", new String[] {"object", "object2", "object3"}, (visitor -> {
             Variable object = visitor.getVariable("object");
             Variable object2 = visitor.getVariable("object2");
-            if (object2.getValue().getType() != LiteralKind.STRING) {
-                throw new ShipTypeError("concat receives 'string' types.", object2.getName());
-            }
-            if (object.getValue().getType() != LiteralKind.STRING) {
-                throw new ShipTypeError("concat receives 'string' types.", object.getName());
-            }
 
             return new RuntimeValue(object.getValue().getValue() + object2.getValue().getValue(), LiteralKind.STRING);
         }));
