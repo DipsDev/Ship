@@ -32,7 +32,7 @@ public class UnaryExpr extends Node {
     }
 
     @Override
-    public RuntimeValue accept(RuntimeVisitor runtime) {
+    public RuntimeValue<?> accept(RuntimeVisitor runtime) {
         return runtime.visit(this);
     }
 }

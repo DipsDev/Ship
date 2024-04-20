@@ -2,16 +2,16 @@ package runtime.models;
 
 import parser.LiteralKind;
 
-public class RuntimeValue {
-    String value;
+public class RuntimeValue<T> {
+    T value;
     LiteralKind type;
 
-    public RuntimeValue(String value, LiteralKind type) {
+    public RuntimeValue(T value, LiteralKind type) {
         this.value = value;
         this.type = type;
     }
 
-    public String getValue() {
+    public T getValue() {
         return value;
     }
 

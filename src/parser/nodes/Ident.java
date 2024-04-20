@@ -25,7 +25,7 @@ public class Ident extends Node {
     }
 
     @Override
-    public RuntimeValue accept(RuntimeVisitor runtime) {
+    public RuntimeValue<?> accept(RuntimeVisitor runtime) {
         return runtime.visit(this);
     }
 }

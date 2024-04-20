@@ -2,16 +2,16 @@ package runtime.models;
 
 public class Variable {
     String name;
-    RuntimeValue value;
+    RuntimeValue<?> value;
     boolean constant;
 
-    public Variable(String name, RuntimeValue value, boolean constant) {
+    public Variable(String name, RuntimeValue<?> value, boolean constant) {
         this.name = name;
         this.constant = constant;
         this.value = value;
     }
 
-    public RuntimeValue getValue() {
+    public RuntimeValue<?> getValue() {
         return value;
     }
 
@@ -19,7 +19,7 @@ public class Variable {
         return name;
     }
 
-    public void setValue(RuntimeValue value) {
+    public void setValue(RuntimeValue<?> value) {
         this.value = value;
     }
 

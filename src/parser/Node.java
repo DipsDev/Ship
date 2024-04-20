@@ -1,7 +1,6 @@
 package parser;
 
 import runtime.RuntimeVisitor;
-import runtime.ShipVisitor;
 import runtime.models.RuntimeValue;
 
 public abstract class Node {
@@ -15,7 +14,7 @@ public abstract class Node {
         return loc;
     }
 
-    public RuntimeValue accept(RuntimeVisitor runtime) {
+    public RuntimeValue<?> accept(RuntimeVisitor runtime) {
         return RuntimeVisitor.NIL;
     }
 

@@ -215,6 +215,15 @@ public class ShipParser {
 
     }
 
+    private Node parseArrDecl() {
+        ArrayLit arr = new ArrayLit(this.tokens.advance().getLocation()); // eat the '['
+        while (tokens.get().getType() != TokenType.CLOSE_BRACKET) {
+            arr.addElement(this.parse());
+        }
+        tokens.advance(); // eat the ']'
+        return arr;
+    }
+
 
     private Node parseIfStmt() {
         Token ifWord = tokens.advance(); // remove the if keyword
@@ -244,6 +253,9 @@ public class ShipParser {
         switch(token.getType()) {
             case INTEGER, FLOAT, BINARY_OPERATOR -> {
                 return parseNumberExpr();
+            }
+            case OPEN_BRACKET -> {
+                return parseArrDecl();
             }
             case STRING -> {
                 return parseString();

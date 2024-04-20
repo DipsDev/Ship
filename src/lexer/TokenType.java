@@ -14,6 +14,9 @@ public enum TokenType {
     CLOSE_PARAN,
     OPEN_BLOCK,
     CLOSE_BLOCK,
+    OPEN_BRACKET,
+    CLOSE_BRACKET,
+
     STRING,
     LET,
     CONST,

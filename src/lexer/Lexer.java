@@ -96,6 +96,12 @@ public class Lexer {
             else if (current == '{') {
                 tokens.add(new Token("{", TokenType.OPEN_BLOCK, line, col));
             }
+            else if (current == '[') {
+                tokens.add(new Token("[", TokenType.OPEN_BRACKET, line, col));
+            }
+            else if (current == ']') {
+                tokens.add(new Token("]", TokenType.CLOSE_BRACKET, line, col));
+            }
             else if (current == '}') {
                 tokens.add(new Token("}", TokenType.CLOSE_BLOCK, line, col));
             }

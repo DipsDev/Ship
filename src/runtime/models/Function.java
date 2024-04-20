@@ -3,7 +3,6 @@ package runtime.models;
 import parser.Node;
 import runtime.RuntimeVisitor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static runtime.RuntimeVisitor.NIL;
@@ -23,9 +22,9 @@ public class Function {
         return name;
     }
 
-    public RuntimeValue run(RuntimeVisitor visitor) {
+    public RuntimeValue<?> run(RuntimeVisitor visitor) {
         for (Node node : this.body) {
-            RuntimeValue val = node.accept(visitor);
+            RuntimeValue<?> val = node.accept(visitor);
             if (val != NIL) {
                 return val;
             }

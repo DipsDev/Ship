@@ -8,8 +8,11 @@ import parser.nodes.Program;
 import runtime.models.GlobalFunction;
 import runtime.models.RuntimeValue;
 import runtime.models.Variable;
+import runtime.models.values.NumberValue;
+import runtime.models.values.StringValue;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 public class ShipRuntime {
@@ -33,7 +36,7 @@ public class ShipRuntime {
 
     private GlobalFunction createTimeFunction() {
         return new GlobalFunction("time", new String[] {}, (visitor -> {
-            return new RuntimeValue(((Number) System.nanoTime()).intValue() + "", LiteralKind.INT);
+            return new NumberValue(((Number) System.nanoTime()).intValue(), LiteralKind.INT);
         }));
     }
 
@@ -41,10 +44,14 @@ public class ShipRuntime {
         return new GlobalFunction("size", new String[] {"object"}, (visitor -> {
             Variable var = visitor.getVariable("object");
             if (var.getValue().getType().getBase() != BaseKind.ARRAY) {
-                throw new ShipTypeError(String.format("object of type '%s' has no size()", var.getValue().getType().name().toLowerCase(Locale.ROOT)), var.getValue().getValue(), "");
+                throw new ShipTypeError(String.format("object of type '%s' has no size()", var.getValue().getType().name().toLowerCase(Locale.ROOT)), var.getValue().getValue().toString(), "");
             }
-
-            return new RuntimeValue(var.getValue().getValue().length() + "", LiteralKind.INT);
+            if (var.getValue().getType() == LiteralKind.STRING) {
+                String value = (String) var.getValue().getValue();
+                return new NumberValue(value.length(), LiteralKind.INT);
+            }
+            List<RuntimeValue<?>> values = (List<RuntimeValue<?>>) var.getValue().getValue();
+            return new NumberValue(values.size(), LiteralKind.INT);
         }));
     }
 
@@ -53,7 +60,11 @@ public class ShipRuntime {
             Variable object = visitor.getVariable("object");
             Variable object2 = visitor.getVariable("object2");
 
-            return new RuntimeValue(object.getValue().getValue() + object2.getValue().getValue(), LiteralKind.STRING);
+            if (object.getValue().getType() == LiteralKind.ARRAY || object2.getValue().getType() == LiteralKind.ARRAY) {
+                throw new ShipTypeError("object of type array cannot be concatenated with other types", object.getValue().getValue().toString(), "");
+            }
+
+            return new StringValue(object.getValue().getValue().toString() + object2.getValue().getValue().toString(), LiteralKind.STRING);
         }));
     }
 
