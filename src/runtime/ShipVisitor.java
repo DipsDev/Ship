@@ -3,13 +3,12 @@ package runtime;
 import errors.ShipNameError;
 import errors.ShipSyntaxError;
 import errors.ShipTypeError;
+import parser.LiteralKind;
 import parser.Node;
 import parser.nodes.*;
 import runtime.models.Function;
 import runtime.models.RuntimeValue;
 import runtime.models.Variable;
-
-import java.util.HashMap;
 
 public class ShipVisitor extends RuntimeVisitor {
 

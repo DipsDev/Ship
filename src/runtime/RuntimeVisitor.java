@@ -1,6 +1,8 @@
 package runtime;
 
 import errors.ShipTypeError;
+import parser.BaseKind;
+import parser.LiteralKind;
 import parser.nodes.*;
 import runtime.models.Function;
 import runtime.models.RuntimeValue;
@@ -41,10 +43,10 @@ public abstract class RuntimeVisitor {
         RuntimeValue leftValue = binaryExpr.getLeft().accept(this);
         RuntimeValue rightValue = binaryExpr.getRight().accept(this);
 
-        if (leftValue.getType() != LiteralKind.INT && leftValue.getType() != LiteralKind.FLOAT) {
+        if (leftValue.getType().getBase() != BaseKind.NUMBER) {
             throw new ShipTypeError("unsupported operand type(s)", leftValue.getValue(), binaryExpr.getLeft().getLocation());
         }
-        if (rightValue.getType() != LiteralKind.INT && rightValue.getType() != LiteralKind.FLOAT) {
+        if (rightValue.getType().getBase() != BaseKind.NUMBER) {
             throw new ShipTypeError("unsupported operand type(s)", rightValue.getValue(), binaryExpr.getRight().getLocation());
         }
 

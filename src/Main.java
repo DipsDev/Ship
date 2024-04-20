@@ -28,10 +28,10 @@ public class Main {
             String code = Files.readString(Path.of(path));
             Lexer lexer = new Lexer();
             LexerQueue lexerQueue = lexer.tokenize(code);
-            lexerQueue.getTokens().forEach(System.out::println);
+            // lexerQueue.getTokens().forEach(System.out::println);
             ShipParser parser = new ShipParser(lexerQueue);
             Program pr = parser.build();
-            pr.getBody().forEach(System.out::println);
+            // pr.getBody().forEach(System.out::println);
             new ShipRuntime().execute(pr);
 
 

@@ -1,6 +1,6 @@
 package runtime.models;
 
-import parser.nodes.LiteralKind;
+import parser.LiteralKind;
 
 public class RuntimeValue {
     String value;

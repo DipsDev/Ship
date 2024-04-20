@@ -1,14 +1,16 @@
 package runtime;
 
 import errors.ShipTypeError;
+import parser.BaseKind;
 import parser.Node;
-import parser.nodes.LiteralKind;
+import parser.LiteralKind;
 import parser.nodes.Program;
 import runtime.models.GlobalFunction;
 import runtime.models.RuntimeValue;
 import runtime.models.Variable;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 public class ShipRuntime {
     ShipVisitor main;
@@ -38,8 +40,8 @@ public class ShipRuntime {
     private GlobalFunction createSizeFunction() {
         return new GlobalFunction("size", new String[] {"object"}, (visitor -> {
             Variable var = visitor.getVariable("object");
-            if (var.getValue().getType() != LiteralKind.STRING) {
-                throw new ShipTypeError(String.format("object of type '%s' has no len()", var.getValue().getType()), var.getValue().getValue(), "");
+            if (var.getValue().getType().getBase() != BaseKind.ARRAY) {
+                throw new ShipTypeError(String.format("object of type '%s' has no size()", var.getValue().getType().name().toLowerCase(Locale.ROOT)), var.getValue().getValue(), "");
             }
 
             return new RuntimeValue(var.getValue().getValue().length() + "", LiteralKind.INT);

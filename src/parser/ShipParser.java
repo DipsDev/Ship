@@ -8,7 +8,6 @@ import lexer.TokenType;
 import parser.nodes.*;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class ShipParser {
     private final LexerQueue tokens;
