@@ -11,7 +11,7 @@ const favorite_number = 49; // this is a constant variable
 let age = 17; // this is not!
 ```
 Supported variable types
-```
+```javascript
 const string = "Hello World!"; // strings
 const integer = 16; // integers
 const double = 14.5634; // doubles
